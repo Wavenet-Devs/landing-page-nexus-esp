@@ -1,1436 +1,1385 @@
 'use client';
 
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
-  ArrowRight, ChevronRight, CheckCircle2,
-  FileText, CreditCard, Gauge, Banknote,
-  BarChart2, Users, Check, Star, Zap,
-  MoveRight, TrendingUp, Clock, Plus, Minus,
-  Send, Phone, Mail, MapPin,
+  ArrowRight, ArrowUpRight, Check, Minus, Plus,
+  MessageCircle, Mail, MapPin, Clock,
+  SlidersHorizontal, Users, Gauge, Receipt, Banknote, HandCoins,
+  MessagesSquare, Landmark, BarChart3, ShieldCheck, Building2, Plug,
+  SearchCheck, Database, FileCheck2, GraduationCap, Rocket, LifeBuoy,
+  Smartphone, ScanLine, Stamp,
 } from 'lucide-react';
+import { NexusMark, NexusLockup, WavenetMark, LOGO } from '@/components/brand';
+import InvoiceDemo from '@/components/invoice-demo';
+import ReaderApp from '@/components/reader-app';
 
-function NexusLogo({ size = 48 }: { size?: number }) {
+const WA_NUM  = '573171557395';
+const WA_SHOW = '317 155 7395';
+const CORREO  = 'wavenetdevs@gmail.com';
+const WAVENET = 'https://wavenetdevs-web.vercel.app/';
+const CIUDAD  = 'Cali, Valle del Cauca — Colombia';
+
+const waLink = (t: string) => `https://wa.me/${WA_NUM}?text=${encodeURIComponent(t)}`;
+
+/* ═══════════════════════════════════════════════════════════════════
+   PRIMITIVAS
+   ═══════════════════════════════════════════════════════════════════ */
+
+function Reveal({ children, className = '', delay = 0 }: {
+  children: ReactNode; className?: string; delay?: number;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { el.classList.add('is-in'); io.disconnect(); } },
+      { threshold: 0.1, rootMargin: '0px 0px -80px 0px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   return (
-    <Image
-      src="/nexus-logo.png"
-      alt="Nexus"
-      width={size}
-      height={size}
-      className="object-contain drop-shadow-lg"
-    />
+    <div ref={ref} className={`reveal ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+      {children}
+    </div>
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
-   NAV
-───────────────────────────────────────────────────────────── */
-function Nav() {
-  return (
-    <nav className="fixed top-0 inset-x-0 z-50">
-      <div className="mx-auto max-w-7xl px-6 py-4">
-        <div
-          className="flex items-center justify-between rounded-2xl border px-6 py-3"
-          style={{
-            background:           'rgba(6,9,18,0.88)',
-            borderColor:          '#1e2d42',
-            backdropFilter:       'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-          }}
-        >
-          <a href="#inicio" className="flex items-center gap-3">
-            <NexusLogo size={36} />
-            <span className="text-lg font-semibold tracking-tight" style={{ color: '#e8f0fe' }}>
-              Nexus
-            </span>
-          </a>
-
-          <div className="hidden md:flex items-center gap-7">
-            {[
-              { label: 'La plataforma', href: '#plataforma'  },
-              { label: 'Cómo funciona', href: '#como'        },
-              { label: 'Precios',       href: '#precios'     },
-              { label: 'Nosotros',      href: '#nosotros'    },
-              { label: 'Preguntas',     href: '#faq'         },
-            ].map((item) => (
-              <a key={item.label} href={item.href} className="text-sm font-medium nav-link">
-                {item.label}
-              </a>
-            ))}
-          </div>
-
-          <a
-            href="#contacto"
-            className="btn-primary relative inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold"
-          >
-            <span className="relative z-10">Solicitar demo</span>
-          </a>
-        </div>
-      </div>
-    </nav>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────
-   HERO
-───────────────────────────────────────────────────────────── */
-function Hero() {
+/* Un solo lugar define el ritmo vertical de toda la página. */
+function Section({ id, band = false, children }: {
+  id?: string; band?: boolean; children: ReactNode;
+}) {
   return (
     <section
-      id="inicio"
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden grid-bg noise-overlay"
-      style={{ paddingTop: '120px', paddingBottom: '80px' }}
+      id={id}
+      style={{
+        background: band ? 'var(--color-band)' : 'transparent',
+        paddingTop:    'clamp(4.5rem, 9vw, 8rem)',
+        paddingBottom: 'clamp(4.5rem, 9vw, 8rem)',
+      }}
     >
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="orb-1 absolute rounded-full" style={{ width: '680px', height: '680px', top: '-200px', left: '-180px', background: 'radial-gradient(circle, rgba(56,189,248,0.18) 0%, transparent 70%)', filter: 'blur(40px)' }} />
-        <div className="orb-2 absolute rounded-full" style={{ width: '520px', height: '520px', top: '-100px', right: '-100px', background: 'radial-gradient(circle, rgba(251,146,60,0.14) 0%, transparent 70%)', filter: 'blur(50px)' }} />
-        <div className="orb-3 absolute rounded-full" style={{ width: '600px', height: '600px', bottom: '-200px', right: '10%', background: 'radial-gradient(circle, rgba(163,230,53,0.1) 0%, transparent 70%)', filter: 'blur(60px)' }} />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
-        <div className="animate-fade-up inline-flex items-center gap-2 rounded-full border px-4 py-1.5 mb-10" style={{ borderColor: '#243650', background: 'rgba(13,17,32,0.8)' }}>
-          <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: '#a3e635' }} />
-          <span className="text-xs font-medium tracking-widest uppercase" style={{ color: '#6b80a3' }}>
-            Plataforma SaaS · Empresas de Energía · Colombia
-          </span>
-        </div>
-
-        <h1 className="animate-fade-up-delay-1" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3.2rem, 8vw, 7rem)', fontWeight: '400', lineHeight: '1.02', letterSpacing: '-0.02em', color: '#e8f0fe', marginBottom: '0.3rem' }}>
-          Tu empresa de energía,
-        </h1>
-        <h1 className="animate-fade-up-delay-1" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3.2rem, 8vw, 7rem)', fontWeight: '400', fontStyle: 'italic', lineHeight: '1.05', letterSpacing: '-0.02em', marginBottom: '2.5rem' }}>
-          <span className="text-shimmer">como debe funcionar.</span>
-        </h1>
-
-        <p className="animate-fade-up-delay-2 mx-auto max-w-2xl text-xl leading-relaxed" style={{ color: '#6b80a3', fontWeight: '300', marginBottom: '3rem' }}>
-          Nexus centraliza la facturación, cobros y gestión operativa de tu ESP
-          en una sola plataforma moderna. Diseñada para el sector, lista desde el primer día.
-        </p>
-
-        <div className="animate-fade-up-delay-3 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="#contacto" className="btn-primary relative inline-flex items-center gap-3 rounded-2xl px-8 py-4 text-base font-semibold">
-            <span className="relative z-10">Ver Nexus en acción</span>
-            <ArrowRight className="relative z-10 h-4 w-4" />
-          </a>
-          <a href="#plataforma" className="inline-flex items-center gap-2 rounded-2xl border px-8 py-4 text-base font-medium" style={{ borderColor: '#1e2d42', color: '#6b80a3' }}>
-            Qué hace Nexus <ChevronRight className="h-4 w-4" />
-          </a>
-        </div>
-
-        <div className="animate-fade-up-delay-4 mt-16 flex flex-col items-center gap-3">
-          <div className="flex gap-1">
-            {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-current" style={{ color: '#fb923c' }} />)}
-          </div>
-          <p className="text-sm" style={{ color: '#3a4d6b' }}>
-            Operando en producción con <span style={{ color: '#6b80a3' }}>Electronuqui ESP</span> desde 2024
-          </p>
-        </div>
-      </div>
-
-      <div className="animate-fade-in relative z-10 mx-auto max-w-5xl px-6 mt-20 w-full">
-        <DemoPlayer />
-      </div>
+      <div className="mx-auto w-full max-w-[1140px] px-5 sm:px-8">{children}</div>
     </section>
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
-   DEMO PLAYER — animated screen recording
-───────────────────────────────────────────────────────────── */
-const DEMO_DURATION = 5000; // ms per screen
-
-function DemoPlayer() {
-  const [active, setActive]     = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [paused, setPaused]     = useState(false);
-  const total = 4;
-
-  useEffect(() => {
-    if (paused) return;
-    const step = 100 / (DEMO_DURATION / 80);
-    const iv = setInterval(() => {
-      setProgress((p) => {
-        if (p >= 100) {
-          setActive((a) => (a + 1) % total);
-          return 0;
-        }
-        return p + step;
-      });
-    }, 80);
-    return () => clearInterval(iv);
-  }, [paused, active]);
-
-  const screens = ['Dashboard', 'Facturación', 'Cobros', 'Reportes'];
-  const paths   = ['/electronuqui/inicio', '/electronuqui/facturacion', '/electronuqui/cobros', '/electronuqui/reportes'];
-  const navActive = [0, 2, 3, 4];
-
-  const sidebarItems = ['Inicio', 'Clientes', 'Facturación', 'Cobros', 'Reportes'];
-
+/* Encabezado: una línea corta de acento, el rótulo y el título.
+   Nada de reglas de ancho completo. */
+function Encabezado({ eyebrow, titulo, bajada, centrado = false }: {
+  eyebrow: string; titulo: ReactNode; bajada?: ReactNode; centrado?: boolean;
+}) {
   return (
     <div
-      className="animate-float animate-pulse-glow relative rounded-3xl border overflow-hidden"
-      style={{ borderColor: '#1e2d42', background: '#0c1120' }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      style={{ marginBottom: 'clamp(2.5rem, 5vw, 4rem)' }}
+      className={centrado ? 'text-center mx-auto max-w-[54ch]' : ''}
     >
-      {/* ── Window chrome ── */}
-      <div className="flex items-center gap-3 border-b px-5 py-3.5" style={{ borderColor: '#1e2d42' }}>
-        <span className="h-3 w-3 rounded-full" style={{ background: '#ef4444' }} />
-        <span className="h-3 w-3 rounded-full" style={{ background: '#f59e0b' }} />
-        <span className="h-3 w-3 rounded-full" style={{ background: '#22c55e' }} />
-        <div className="ml-3 flex-1 rounded-lg px-4 py-1.5 text-xs flex items-center gap-2" style={{ background: '#101828', color: '#3a4d6b', fontFamily: 'monospace' }}>
-          nexus.co / {paths[active]}
-        </div>
-        {/* REC indicator */}
-        <div className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full animate-pulse" style={{ background: '#ef4444' }} />
-          <span className="text-xs font-medium" style={{ color: '#ef4444' }}>EN VIVO</span>
-        </div>
+      <div className={`flex items-center gap-2.5 mb-4 ${centrado ? 'justify-center' : ''}`}>
+        <span style={{ width: 22, height: 2, borderRadius: 2, background: 'var(--color-verde)' }} aria-hidden />
+        <span className="label">{eyebrow}</span>
       </div>
-
-      {/* ── Progress bar ── */}
-      <div className="h-0.5 w-full" style={{ background: '#1e2d42' }}>
-        <div
-          className="h-full transition-none"
-          style={{ width: `${progress}%`, background: 'linear-gradient(90deg, #38bdf8, #a3e635)' }}
-        />
-      </div>
-
-      {/* ── Screen tabs ── */}
-      <div className="flex items-center gap-1 px-5 py-2 border-b" style={{ borderColor: '#1e2d42', background: '#080e1c' }}>
-        {screens.map((s, i) => (
-          <button
-            key={s}
-            onClick={() => { setActive(i); setProgress(0); }}
-            className="rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200"
-            style={{ background: active === i ? 'rgba(56,189,248,0.12)' : 'transparent', color: active === i ? '#38bdf8' : '#3a4d6b' }}
-          >
-            {s}
-          </button>
-        ))}
-        <div className="ml-auto flex gap-1">
-          {screens.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => { setActive(i); setProgress(0); }}
-              className="h-1.5 rounded-full transition-all duration-300"
-              style={{ width: active === i ? '20px' : '6px', background: active === i ? '#38bdf8' : '#1e2d42' }}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* ── Main area ── */}
-      <div className="flex" style={{ minHeight: '400px' }}>
-
-        {/* Sidebar */}
-        <div className="hidden sm:flex w-48 flex-col border-r py-3 shrink-0" style={{ borderColor: '#1e2d42', background: '#080e1c' }}>
-          <div className="flex items-center gap-2 px-4 py-2 mb-3">
-            <NexusLogo size={24} />
-            <span className="text-sm font-semibold" style={{ color: '#e8f0fe' }}>Nexus</span>
-          </div>
-          <div className="px-3 pb-2">
-            <div className="rounded-lg px-3 py-2 mb-1" style={{ background: 'rgba(163,230,53,0.08)' }}>
-              <p className="text-[10px] font-medium" style={{ color: '#3a4d6b' }}>EMPRESA</p>
-              <p className="text-xs font-semibold truncate" style={{ color: '#6b80a3' }}>Electronuqui ESP</p>
-            </div>
-          </div>
-          {sidebarItems.map((item, i) => (
-            <div
-              key={item}
-              className="mx-3 rounded-xl px-3 py-2.5 text-xs font-medium mb-0.5 transition-colors duration-300"
-              style={{ background: navActive[active] === i ? 'rgba(56,189,248,0.15)' : 'transparent', color: navActive[active] === i ? '#38bdf8' : '#3a4d6b' }}
-            >
-              {item}
-            </div>
-          ))}
-        </div>
-
-        {/* Content area */}
-        <div className="flex-1 overflow-hidden relative">
-
-          {/* Screen 0 — Dashboard */}
-          <div className="absolute inset-0 p-5 transition-opacity duration-500" style={{ opacity: active === 0 ? 1 : 0, pointerEvents: active === 0 ? 'auto' : 'none' }}>
-            <ScreenDashboard />
-          </div>
-
-          {/* Screen 1 — Facturación */}
-          <div className="absolute inset-0 p-5 transition-opacity duration-500" style={{ opacity: active === 1 ? 1 : 0, pointerEvents: active === 1 ? 'auto' : 'none' }}>
-            <ScreenFacturacion />
-          </div>
-
-          {/* Screen 2 — Cobros */}
-          <div className="absolute inset-0 p-5 transition-opacity duration-500" style={{ opacity: active === 2 ? 1 : 0, pointerEvents: active === 2 ? 'auto' : 'none' }}>
-            <ScreenCobros />
-          </div>
-
-          {/* Screen 3 — Reportes */}
-          <div className="absolute inset-0 p-5 transition-opacity duration-500" style={{ opacity: active === 3 ? 1 : 0, pointerEvents: active === 3 ? 'auto' : 'none' }}>
-            <ScreenReportes />
-          </div>
-        </div>
-      </div>
-
-      {/* ── Hover-to-pause hint ── */}
-      {paused && (
-        <div className="absolute bottom-4 right-4 rounded-lg px-3 py-1.5 text-xs flex items-center gap-1.5" style={{ background: 'rgba(6,9,18,0.9)', border: '1px solid #1e2d42', color: '#6b80a3' }}>
-          <span className="h-1.5 w-1.5 rounded-full" style={{ background: '#fb923c' }} />
-          Pausado
-        </div>
+      <h2 style={{ fontSize: 'clamp(1.8rem, 3.6vw, 2.9rem)', maxWidth: centrado ? undefined : '20ch' }}>
+        {titulo}
+      </h2>
+      {bajada && (
+        <p
+          className={`mt-5 ${centrado ? 'mx-auto' : ''}`}
+          style={{ fontSize: 17, color: 'var(--color-ink-2)', lineHeight: 1.7, maxWidth: '62ch' }}
+        >
+          {bajada}
+        </p>
       )}
     </div>
   );
 }
 
-/* Individual screens ─────────────────────────────────────── */
-
-function ScreenDashboard() {
-  const bars = [55, 72, 48, 88, 74, 95, 68, 85];
+/* Icono en recuadro suave. Da un ancla visual a cada bloque. */
+function Icono({ children, tono = 'verde', size = 44 }: {
+  children: ReactNode; tono?: 'verde' | 'azul' | 'coral' | 'neutro'; size?: number;
+}) {
+  const paleta = {
+    verde:  ['var(--color-verde-tint)', 'var(--color-verde)'],
+    azul:   ['var(--color-azul-tint)',  'var(--color-azul)'],
+    coral:  ['var(--color-coral-tint)', 'var(--color-coral-text)'],
+    neutro: ['var(--color-paper)',      'var(--color-ink-2)'],
+  }[tono];
   return (
-    <div className="h-full flex flex-col gap-4">
-      <p className="text-xs font-medium" style={{ color: '#3a4d6b' }}>Panel de control · Mayo 2026</p>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
-        {[
-          { label: 'Facturado', value: '$48.2M', accent: '#38bdf8', sub: '1.243 facturas'   },
-          { label: 'Recaudado', value: '$41.7M', accent: '#a3e635', sub: '86.5% eficiencia' },
-          { label: 'Por cobrar',value: '$6.5M',  accent: '#fb923c', sub: '213 clientes'     },
-          { label: 'Financiac.',value: '47',     accent: '#c084fc', sub: 'activas'          },
-        ].map((s) => (
-          <div key={s.label} className="rounded-xl border p-3" style={{ borderColor: '#1e2d42', background: '#101828' }}>
-            <p className="text-[10px] mb-1" style={{ color: '#3a4d6b' }}>{s.label}</p>
-            <p className="text-sm font-bold" style={{ color: s.accent }}>{s.value}</p>
-            <p className="text-[10px] mt-0.5" style={{ color: '#6b80a3' }}>{s.sub}</p>
-          </div>
-        ))}
-      </div>
-      <div className="flex-1 rounded-xl border p-4" style={{ borderColor: '#1e2d42', background: '#101828' }}>
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-xs font-medium" style={{ color: '#6b80a3' }}>Facturación vs. recaudo</p>
-          <div className="flex gap-3">
-            <span className="flex items-center gap-1 text-[10px]" style={{ color: '#38bdf8' }}><span className="h-1.5 w-1.5 rounded-full bg-current inline-block" />Facturado</span>
-            <span className="flex items-center gap-1 text-[10px]" style={{ color: '#a3e635' }}><span className="h-1.5 w-1.5 rounded-full bg-current inline-block" />Recaudado</span>
-          </div>
-        </div>
-        <div className="flex items-end gap-2" style={{ height: '90px' }}>
-          {bars.map((h, i) => (
-            <div key={i} className="flex-1 flex flex-col gap-0.5 items-center">
-              <div className="w-full rounded-sm" style={{ height: `${h}%`, background: 'linear-gradient(to top, #0284c7, #38bdf8)', opacity: 0.9 }} />
-              <div className="w-full rounded-sm" style={{ height: `${h * 0.85}%`, background: 'linear-gradient(to top, #4d7c0f, #a3e635)', opacity: 0.7 }} />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+    <span
+      className="inline-flex items-center justify-center shrink-0"
+      style={{ width: size, height: size, borderRadius: size * 0.29, background: paleta[0], color: paleta[1] }}
+      aria-hidden
+    >
+      {children}
+    </span>
   );
 }
 
-function ScreenFacturacion() {
-  const invoices = [
-    { name: 'María García',      contract: 'C-0041', value: '$82.400',  status: 'Generada', accent: '#a3e635' },
-    { name: 'Carlos Hernández',  contract: 'C-0042', value: '$94.100',  status: 'Generada', accent: '#a3e635' },
-    { name: 'Ana Restrepo',      contract: 'C-0043', value: '$71.800',  status: 'Generada', accent: '#a3e635' },
-    { name: 'Luis Martínez',     contract: 'C-0044', value: '$108.600', status: 'Generando...', accent: '#fb923c' },
-    { name: 'Sandra Ospina',     contract: 'C-0045', value: '—',        status: 'En cola',  accent: '#3a4d6b' },
-  ];
+/* Ítem de lista sin bordes: el aire hace la separación. */
+function Item({ children, color = 'var(--color-verde)' }: { children: ReactNode; color?: string }) {
   return (
-    <div className="h-full flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-xs font-medium" style={{ color: '#3a4d6b' }}>Generación de facturas · Mayo 2026</p>
-          <p className="text-sm font-semibold mt-0.5" style={{ color: '#e8f0fe' }}>1.243 clientes</p>
-        </div>
-        <div className="rounded-xl px-3 py-1.5 flex items-center gap-2" style={{ background: 'rgba(163,230,53,0.12)', border: '1px solid rgba(163,230,53,0.2)' }}>
-          <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: '#a3e635' }} />
-          <span className="text-xs font-medium" style={{ color: '#a3e635' }}>Generando...</span>
-        </div>
-      </div>
-      {/* Progress */}
-      <div className="rounded-xl border p-3" style={{ borderColor: '#1e2d42', background: '#101828' }}>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs" style={{ color: '#6b80a3' }}>Progreso</span>
-          <span className="text-xs font-semibold" style={{ color: '#a3e635' }}>987 / 1.243</span>
-        </div>
-        <div className="h-2 w-full rounded-full overflow-hidden" style={{ background: '#1e2d42' }}>
-          <div className="h-full rounded-full" style={{ width: '79%', background: 'linear-gradient(90deg, #4d7c0f, #a3e635)' }} />
-        </div>
-      </div>
-      {/* List */}
-      <div className="flex-1 rounded-xl border overflow-hidden" style={{ borderColor: '#1e2d42', background: '#101828' }}>
-        <div className="grid grid-cols-4 px-4 py-2 border-b text-[10px] font-semibold uppercase tracking-wider" style={{ borderColor: '#1e2d42', color: '#3a4d6b' }}>
-          <span>Cliente</span><span>Contrato</span><span>Valor</span><span>Estado</span>
-        </div>
-        {invoices.map((inv, i) => (
-          <div key={i} className="grid grid-cols-4 px-4 py-2.5 border-b items-center" style={{ borderColor: '#1e2d4218' }}>
-            <span className="text-xs truncate" style={{ color: '#8899bb' }}>{inv.name}</span>
-            <span className="text-xs font-mono" style={{ color: '#3a4d6b' }}>{inv.contract}</span>
-            <span className="text-xs font-semibold" style={{ color: '#e8f0fe' }}>{inv.value}</span>
-            <span className="text-[10px] font-medium" style={{ color: inv.accent }}>{inv.status}</span>
-          </div>
-        ))}
-      </div>
-    </div>
+    <li className="flex items-start gap-3">
+      <Check className="h-[17px] w-[17px] shrink-0 mt-[3px]" style={{ color }} aria-hidden />
+      <span style={{ fontSize: 15, color: 'var(--color-ink-2)', lineHeight: 1.6 }}>{children}</span>
+    </li>
   );
 }
 
-function ScreenCobros() {
-  return (
-    <div className="h-full flex gap-4">
-      {/* Client search */}
-      <div className="flex flex-col gap-3 w-full lg:w-auto lg:flex-1">
-        <p className="text-xs font-medium" style={{ color: '#3a4d6b' }}>Registrar cobro</p>
-        {/* Client card */}
-        <div className="rounded-xl border p-4" style={{ borderColor: '#243650', background: '#101828' }}>
-          <p className="text-[10px] mb-1" style={{ color: '#3a4d6b' }}>CLIENTE</p>
-          <p className="text-sm font-semibold" style={{ color: '#e8f0fe' }}>María García Londoño</p>
-          <p className="text-xs mt-0.5" style={{ color: '#6b80a3' }}>Contrato C-0041 · Medidor M-8821</p>
-          <div className="mt-3 flex gap-2">
-            <div className="rounded-lg px-2 py-1 text-[10px] font-medium" style={{ background: 'rgba(251,146,60,0.12)', color: '#fb923c' }}>
-              Deuda: $168.000
-            </div>
-            <div className="rounded-lg px-2 py-1 text-[10px] font-medium" style={{ background: 'rgba(56,189,248,0.08)', color: '#38bdf8' }}>
-              2 facturas
-            </div>
-          </div>
-        </div>
-        {/* Invoices */}
-        <div className="rounded-xl border p-3 flex flex-col gap-2" style={{ borderColor: '#1e2d42', background: '#101828' }}>
-          {[
-            { period: 'Abril 2026', val: '$82.400',  checked: true  },
-            { period: 'Mayo 2026',  val: '$85.600',  checked: false },
-          ].map((inv) => (
-            <div key={inv.period} className="flex items-center justify-between rounded-lg p-2.5" style={{ background: inv.checked ? 'rgba(56,189,248,0.06)' : 'transparent', border: `1px solid ${inv.checked ? '#38bdf840' : '#1e2d42'}` }}>
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 rounded flex items-center justify-center" style={{ background: inv.checked ? '#38bdf8' : '#1e2d42' }}>
-                  {inv.checked && <Check className="h-2.5 w-2.5" style={{ color: '#000' }} />}
-                </div>
-                <span className="text-xs" style={{ color: '#6b80a3' }}>{inv.period}</span>
-              </div>
-              <span className="text-xs font-semibold" style={{ color: '#e8f0fe' }}>{inv.val}</span>
-            </div>
-          ))}
-        </div>
-        {/* Amount */}
-        <div className="rounded-xl border p-3" style={{ borderColor: '#243650', background: '#101828' }}>
-          <p className="text-[10px] mb-1.5" style={{ color: '#3a4d6b' }}>MONTO RECIBIDO</p>
-          <div className="text-xl font-bold" style={{ color: '#a3e635' }}>$82.400</div>
-        </div>
-        {/* Button */}
-        <button className="w-full rounded-xl py-3 text-sm font-semibold flex items-center justify-center gap-2" style={{ background: '#a3e635', color: '#060912' }}>
-          <CreditCard className="h-4 w-4" />
-          Registrar y emitir comprobante
-        </button>
-      </div>
-    </div>
-  );
-}
+/* ═══════════════════════════════════════════════════════════════════
+   NAVEGACIÓN
+   ═══════════════════════════════════════════════════════════════════ */
 
-function ScreenReportes() {
-  const rows = [
-    { name: 'Barrio El Centro',    clients: 284, deuda: '$2.1M',  pct: 12, accent: '#fb923c' },
-    { name: 'Barrio La Esperanza', clients: 198, deuda: '$1.4M',  pct: 8,  accent: '#fb923c' },
-    { name: 'Barrio San José',     clients: 156, deuda: '$0.8M',  pct: 5,  accent: '#a3e635' },
-    { name: 'Barrio Villa Nueva',  clients: 210, deuda: '$1.9M',  pct: 10, accent: '#fb923c' },
-  ];
-  return (
-    <div className="h-full flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-xs font-medium" style={{ color: '#3a4d6b' }}>Lista de corte · Mayo 2026</p>
-          <p className="text-sm font-semibold mt-0.5" style={{ color: '#e8f0fe' }}>213 clientes con deuda</p>
-        </div>
-        <button className="rounded-xl border px-3 py-1.5 text-xs font-medium flex items-center gap-1.5" style={{ borderColor: '#1e2d42', color: '#6b80a3' }}>
-          Exportar XLSX
-        </button>
-      </div>
-      {/* Summary bar */}
-      <div className="grid grid-cols-3 gap-2.5">
-        {[
-          { label: 'Total deuda',      val: '$6.5M',  accent: '#fb923c' },
-          { label: 'Clientes al corte',val: '213',    accent: '#fb923c' },
-          { label: 'Recaudo del mes',  val: '86.5%',  accent: '#a3e635' },
-        ].map((m) => (
-          <div key={m.label} className="rounded-xl border p-2.5" style={{ borderColor: '#1e2d42', background: '#101828' }}>
-            <p className="text-[10px]" style={{ color: '#3a4d6b' }}>{m.label}</p>
-            <p className="text-sm font-bold" style={{ color: m.accent }}>{m.val}</p>
-          </div>
-        ))}
-      </div>
-      {/* Table */}
-      <div className="flex-1 rounded-xl border overflow-hidden" style={{ borderColor: '#1e2d42', background: '#101828' }}>
-        <div className="grid grid-cols-4 px-4 py-2 border-b text-[10px] font-semibold uppercase tracking-wider" style={{ borderColor: '#1e2d42', color: '#3a4d6b' }}>
-          <span className="col-span-2">Barrio</span><span>Deuda</span><span>% Cartera</span>
-        </div>
-        {rows.map((row, i) => (
-          <div key={i} className="grid grid-cols-4 px-4 py-2.5 border-b items-center" style={{ borderColor: '#1e2d4218' }}>
-            <div className="col-span-2">
-              <p className="text-xs" style={{ color: '#8899bb' }}>{row.name}</p>
-              <p className="text-[10px]" style={{ color: '#3a4d6b' }}>{row.clients} clientes</p>
-            </div>
-            <span className="text-xs font-semibold" style={{ color: '#e8f0fe' }}>{row.deuda}</span>
-            <div className="flex items-center gap-2">
-              <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: '#1e2d42' }}>
-                <div className="h-full rounded-full" style={{ width: `${row.pct * 8}%`, background: row.accent }} />
-              </div>
-              <span className="text-[10px]" style={{ color: row.accent }}>{row.pct}%</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+const NAV = [
+  { t: 'Plataforma',   h: '#plataforma'  },
+  { t: 'App de campo', h: '#campo'       },
+  { t: 'Presupuesto',  h: '#presupuesto' },
+  { t: 'Soluciones',   h: '#soluciones'  },
+  { t: 'Preguntas',    h: '#preguntas'   },
+];
 
-/* ─────────────────────────────────────────────────────────────
-   STATS
-───────────────────────────────────────────────────────────── */
-function Stats() {
-  const stats = [
-    { value: '1.200+', label: 'Clientes gestionados en producción', accent: '#38bdf8' },
-    { value: '100%',   label: 'Del ciclo de facturación cubierto',   accent: '#a3e635' },
-    { value: '2 min',  label: 'Para activar una empresa nueva',      accent: '#fb923c' },
-    { value: '0',      label: 'Instalaciones necesarias',            accent: '#c084fc' },
-  ];
+function Nav() {
+  const [fijo, setFijo] = useState(false);
+  const [abierto, setAbierto] = useState(false);
+
+  useEffect(() => {
+    const on = () => setFijo(window.scrollY > 16);
+    on();
+    window.addEventListener('scroll', on, { passive: true });
+    return () => window.removeEventListener('scroll', on);
+  }, []);
 
   return (
-    <section className="relative border-t border-b" style={{ borderColor: '#1e2d42' }}>
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px" style={{ background: '#1e2d42' }}>
-          {stats.map((s) => (
-            <div key={s.label} className="flex flex-col items-center justify-center text-center py-12 px-8" style={{ background: '#060912' }}>
-              <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: '400', color: s.accent, lineHeight: '1', marginBottom: '0.75rem' }}>{s.value}</p>
-              <p className="text-sm leading-snug max-w-[160px]" style={{ color: '#6b80a3' }}>{s.label}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+    <header
+      className="fixed top-0 inset-x-0 z-50 transition-all duration-200"
+      style={{
+        background: fijo ? 'rgba(244,246,242,0.82)' : 'transparent',
+        borderBottom: `1px solid ${fijo ? 'var(--color-line)' : 'transparent'}`,
+        backdropFilter: fijo ? 'blur(14px) saturate(1.4)' : 'none',
+        WebkitBackdropFilter: fijo ? 'blur(14px) saturate(1.4)' : 'none',
+      }}
+    >
+      <div className="mx-auto w-full max-w-[1140px] px-5 sm:px-8">
+        <div className="flex items-center justify-between" style={{ height: 88 }}>
+          <a href="#inicio" aria-label="Nexus, inicio">
+            <NexusLockup {...LOGO.navegacion} priority />
+          </a>
 
-/* ─────────────────────────────────────────────────────────────
-   QUÉ HACE — narrative
-───────────────────────────────────────────────────────────── */
-function WhatItDoes() {
-  return (
-    <section className="relative py-32 border-t" style={{ borderColor: '#1e2d42', background: '#080e1c' }}>
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="grid lg:grid-cols-2 gap-20 items-start">
-          <div>
-            <p className="text-xs font-medium tracking-widest uppercase mb-4" style={{ color: '#38bdf8' }}>Para qué está hecha</p>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 4vw, 4rem)', fontWeight: '400', color: '#e8f0fe', lineHeight: '1.1', marginBottom: '2rem' }}>
-              Todo lo que necesita<br />
-              <span style={{ fontStyle: 'italic', color: '#6b80a3' }}>una ESP para operar.</span>
-            </h2>
-            <div className="space-y-5" style={{ color: '#6b80a3', fontSize: '1.05rem', lineHeight: '1.75' }}>
-              <p>
-                Muchas empresas de energía llevan años operando con herramientas que
-                funcionan, pero que les quitan más tiempo del que deberían. Nexus no
-                está aquí para reemplazar lo que ya sabes hacer — está aquí para que
-                lo hagas en una fracción del tiempo.
-              </p>
-              <p>
-                Desde que el lector de campo toma la primera medición del mes, hasta
-                que el último cobro queda registrado y el reporte de cartera está listo,
-                todo ocurre en un solo lugar. Sin archivos que cruzar. Sin datos que
-                copiar entre sistemas.
-              </p>
-              <p>
-                Nexus fue construido dentro de una ESP colombiana real, con su regulación,
-                sus procesos y su día a día. Por eso encaja desde el primer momento.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid gap-4 lg:mt-16">
-            {[
-              { icon: TrendingUp, title: 'Visibilidad total de tu negocio',    desc: 'Sabe en tiempo real cuánto facturaste, cuánto recaudaste y qué queda por cobrar. Sin esperar a que alguien arme el reporte.', accent: '#38bdf8' },
-              { icon: Clock,      title: 'El mes cierra en horas, no en días', desc: 'Lecturas, facturas, cobros y reportes fluyen de uno al otro en la misma plataforma. Lo que antes tomaba varios días, ahora toma horas.', accent: '#fb923c' },
-              { icon: Users,      title: 'Cada persona con lo que necesita',   desc: 'El cajero ve cobros, el operador gestiona lecturas, el gerente accede a todo. Claro, ordenado y sin ruido.', accent: '#a3e635' },
-            ].map(({ icon: Icon, title, desc, accent }) => (
-              <div key={title} className="card-glow flex items-start gap-5 rounded-2xl border p-6" style={{ borderColor: '#1e2d42', background: '#0c1120' }}>
-                <div className="shrink-0 h-11 w-11 rounded-xl flex items-center justify-center mt-0.5" style={{ background: accent + '15' }}>
-                  <Icon className="h-5 w-5" style={{ color: accent }} />
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-1.5" style={{ color: '#e8f0fe' }}>{title}</h4>
-                  <p className="text-sm leading-relaxed" style={{ color: '#6b80a3' }}>{desc}</p>
-                </div>
-              </div>
+          <nav className="hidden lg:flex items-center gap-1" aria-label="Principal">
+            {NAV.map((i) => (
+              <a
+                key={i.t}
+                href={i.h}
+                className="btn btn-quiet btn-sm"
+                style={{ fontWeight: 500 }}
+              >
+                {i.t}
+              </a>
             ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+          </nav>
 
-/* ─────────────────────────────────────────────────────────────
-   MÓDULOS
-───────────────────────────────────────────────────────────── */
-function Modules() {
-  const modules = [
-    { icon: Gauge,     title: 'Lecturas de medidores',  desc: 'Sube el archivo de campo y Nexus hace el resto: valida, detecta inconsistencias y deja todo listo para facturar. Tu equipo dedica ese tiempo a lo que importa.',                                     accent: '#38bdf8', tag: '01' },
-    { icon: FileText,  title: 'Facturación automática', desc: 'El motor calcula cada factura según la tarifa vigente, el estrato del cliente y los subsidios aplicables. Produce las facturas con código de barras para pago en bancos.',                            accent: '#fb923c', tag: '02' },
-    { icon: CreditCard,title: 'Cobros y comprobantes',  desc: 'El cajero registra el pago, el sistema aplica el monto a las facturas y la impresora entrega el comprobante al cliente en segundos. Simple y sin errores.',                                          accent: '#a3e635', tag: '03' },
-    { icon: Banknote,  title: 'Planes de financiación', desc: 'Para clientes que acumulan deuda, crea un plan de cuotas en minutos. El seguimiento es automático y siempre sabes en qué punto está cada acuerdo.',                                                   accent: '#c084fc', tag: '04' },
-    { icon: BarChart2, title: 'Reportes operativos',    desc: 'Lista de corte, planilla de lecturas, estado de cartera, eficiencia de recaudo. Cada reporte está a un clic, en el momento que lo necesitas.',                                                         accent: '#fb923c', tag: '05' },
-    { icon: Users,     title: 'Gestión de clientes',    desc: 'Toda la información de tus clientes en un solo lugar: contrato, medidor, historial de facturas, pagos y deuda. Búsqueda y actualización en segundos.',                                                 accent: '#38bdf8', tag: '06' },
-  ];
-
-  return (
-    <section id="plataforma" className="relative py-32">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="max-w-2xl mb-20">
-          <p className="text-xs font-medium tracking-widest uppercase mb-4" style={{ color: '#fb923c' }}>La plataforma</p>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: '400', color: '#e8f0fe', lineHeight: '1.1', marginBottom: '1.5rem' }}>
-            Un ciclo completo.<br />
-            <span style={{ fontStyle: 'italic', color: '#6b80a3' }}>Seis módulos integrados.</span>
-          </h2>
-          <p style={{ color: '#6b80a3', fontSize: '1.1rem', lineHeight: '1.7' }}>
-            Cada módulo comparte los mismos datos, los mismos clientes y las mismas
-            configuraciones. No hay nada que conectar ni sincronizar.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px" style={{ background: '#1e2d42' }}>
-          {modules.map((m) => {
-            const Icon = m.icon;
-            return (
-              <div key={m.title} className="card-glow group relative flex flex-col p-8" style={{ background: '#060912' }}>
-                <div className="flex items-start justify-between mb-6">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl" style={{ background: m.accent + '14' }}>
-                    <Icon className="h-5 w-5" style={{ color: m.accent }} />
-                  </div>
-                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: m.accent + '20', lineHeight: '1' }}>{m.tag}</span>
-                </div>
-                <h3 className="text-lg font-semibold mb-3" style={{ color: '#e8f0fe' }}>{m.title}</h3>
-                <p className="text-sm leading-relaxed flex-1" style={{ color: '#6b80a3' }}>{m.desc}</p>
-                <div className="mt-6 flex items-center gap-1.5 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ color: m.accent }}>
-                  Saber más <MoveRight className="h-3.5 w-3.5" />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────
-   HOW IT WORKS
-───────────────────────────────────────────────────────────── */
-function HowItWorks() {
-  const steps = [
-    { num: '01', title: 'Lecturas del campo',  desc: 'Tu equipo sube el archivo de lecturas del mes. Nexus valida cada dato y deja todo listo para facturar.',                                          accent: '#38bdf8', icon: Gauge      },
-    { num: '02', title: 'Facturas generadas',  desc: 'El sistema produce todas las facturas del período, con tarifas, subsidios y código de barras incluido.',                                           accent: '#fb923c', icon: FileText   },
-    { num: '03', title: 'Cobros registrados',  desc: 'El cajero ingresa el pago. El sistema aplica el monto y la impresora entrega el comprobante al cliente en segundos.',                              accent: '#a3e635', icon: CreditCard },
-    { num: '04', title: 'Reportes al instante',desc: 'Cartera, recaudo, lista de corte. Todo disponible cuando lo necesitas, sin esperar a que nadie lo arme.',                                         accent: '#c084fc', icon: BarChart2  },
-  ];
-
-  return (
-    <section id="como" className="relative py-32 border-t" style={{ borderColor: '#1e2d42' }}>
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(56,189,248,0.04) 0%, transparent 70%)' }} />
-      <div className="relative z-10 mx-auto max-w-7xl px-6">
-        <div className="text-center max-w-2xl mx-auto mb-20">
-          <p className="text-xs font-medium tracking-widest uppercase mb-4" style={{ color: '#fb923c' }}>Cómo funciona</p>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: '400', color: '#e8f0fe', lineHeight: '1.1' }}>
-            Del medidor al cobro.<br />
-            <span style={{ fontStyle: 'italic', color: '#6b80a3' }}>En un solo lugar.</span>
-          </h2>
-        </div>
-        <div className="relative">
-          <div className="hidden lg:block absolute h-px" style={{ background: 'linear-gradient(90deg, transparent, #1e2d42 15%, #1e2d42 85%, transparent)', top: '52px', left: 0, right: 0 }} />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {steps.map((step) => {
-              const Icon = step.icon;
-              return (
-                <div key={step.num} className="relative flex flex-col">
-                  <div className="relative mb-8">
-                    <div className="relative z-10 inline-flex h-[52px] w-[52px] items-center justify-center rounded-2xl border" style={{ borderColor: step.accent + '40', background: step.accent + '12' }}>
-                      <Icon className="h-5 w-5" style={{ color: step.accent }} />
-                    </div>
-                  </div>
-                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', color: step.accent + '25', lineHeight: '1', marginBottom: '0.75rem' }}>{step.num}</p>
-                  <h3 className="text-lg font-semibold mb-3" style={{ color: '#e8f0fe' }}>{step.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: '#6b80a3' }}>{step.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────
-   TRUST
-───────────────────────────────────────────────────────────── */
-function Trust() {
-  return (
-    <section id="nosotros" className="relative py-32 border-t" style={{ borderColor: '#1e2d42', background: '#080e1c' }}>
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="grid lg:grid-cols-2 gap-20 items-center">
-          <div>
-            <p className="text-xs font-medium tracking-widest uppercase mb-4" style={{ color: '#a3e635' }}>Por qué Nexus</p>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 4vw, 4rem)', fontWeight: '400', color: '#e8f0fe', lineHeight: '1.1', marginBottom: '2rem' }}>
-              Hecho por personas<br />
-              <span style={{ fontStyle: 'italic', color: '#6b80a3' }}>que conocen el sector.</span>
-            </h2>
-            <p className="text-lg leading-relaxed mb-10" style={{ color: '#6b80a3' }}>
-              Nexus nació dentro de una ESP colombiana. No es una adaptación
-              genérica — es una plataforma que entiende cómo opera el sector,
-              sus tiempos, su regulación y sus particularidades del día a día.
-            </p>
-            <div className="flex flex-col gap-4">
-              {[
-                'Cumple la regulación colombiana de servicios públicos (CREG)',
-                'Facturas con código de barras para pago en bancos y corresponsales',
-                'Acceso desde cualquier dispositivo, sin instalar nada',
-                'Soporte en español, por personas que entienden tu operación',
-                'Cada empresa tiene su espacio privado e independiente',
-              ].map((item) => (
-                <div key={item} className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5" style={{ color: '#a3e635' }} />
-                  <span className="text-sm" style={{ color: '#6b80a3' }}>{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-5">
-            <div className="rounded-2xl border p-8" style={{ borderColor: '#1e2d42', background: '#0c1120' }}>
-              <div className="flex gap-1 mb-6">
-                {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-current" style={{ color: '#fb923c' }} />)}
-              </div>
-              <p className="text-base leading-relaxed mb-6" style={{ color: '#8899cc', fontStyle: 'italic' }}>
-                &ldquo;Pasamos de generar facturas manualmente a tenerlas listas en minutos.
-                Nuestro equipo de cobros trabaja con más orden y los clientes reciben
-                su comprobante al momento de pagar.&rdquo;
-              </p>
-              <div className="flex items-center gap-3 pt-6 border-t" style={{ borderColor: '#1e2d42' }}>
-                <div className="h-10 w-10 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: 'rgba(56,189,248,0.15)', color: '#38bdf8' }}>EQ</div>
-                <div>
-                  <p className="text-sm font-semibold" style={{ color: '#e8f0fe' }}>Electronuqui ESP</p>
-                  <p className="text-xs" style={{ color: '#3a4d6b' }}>Primer cliente · En producción desde 2024</p>
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { val: '1.200+', label: 'Clientes gestionados',  accent: '#38bdf8' },
-                { val: '100%',   label: 'Del ciclo automatizado', accent: '#a3e635' },
-              ].map((m) => (
-                <div key={m.label} className="rounded-2xl border p-6 text-center" style={{ borderColor: '#1e2d42', background: '#0c1120' }}>
-                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', color: m.accent, lineHeight: '1', marginBottom: '0.5rem' }}>{m.val}</p>
-                  <p className="text-xs" style={{ color: '#6b80a3' }}>{m.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────
-   ONBOARDING DEMO
-───────────────────────────────────────────────────────────── */
-function OnboardingDemo() {
-  const [step, setStep] = useState<'form' | 'creating' | 'done'>('form');
-
-  const handleCreate = () => {
-    setStep('creating');
-    setTimeout(() => setStep('done'), 2000);
-  };
-
-  return (
-    <section className="relative py-32 border-t overflow-hidden" style={{ borderColor: '#1e2d42' }}>
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 80% at 80% 50%, rgba(163,230,53,0.05) 0%, transparent 70%)' }} />
-      <div className="relative z-10 mx-auto max-w-7xl px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <p className="text-xs font-medium tracking-widest uppercase mb-4" style={{ color: '#a3e635' }}>Así de fácil es empezar</p>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 4vw, 4rem)', fontWeight: '400', color: '#e8f0fe', lineHeight: '1.1', marginBottom: '1.5rem' }}>
-              Tu empresa activa<br />
-              <span style={{ fontStyle: 'italic', color: '#6b80a3' }}>en minutos.</span>
-            </h2>
-            <p className="text-lg leading-relaxed mb-10" style={{ color: '#6b80a3' }}>
-              Sin instalaciones. Sin semanas de implementación. Le das los datos
-              de tu empresa y Nexus configura todo automáticamente. Tu equipo
-              puede empezar a operar el mismo día.
-            </p>
-            <div className="flex flex-col gap-4">
-              {[
-                { n: '1', text: 'Nos das los datos básicos de tu empresa' },
-                { n: '2', text: 'Nexus crea tu espacio privado automáticamente' },
-                { n: '3', text: 'Tu administrador recibe sus credenciales de acceso' },
-                { n: '4', text: 'Empiezas a operar ese mismo día' },
-              ].map((item) => (
-                <div key={item.n} className="flex items-center gap-4">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold" style={{ background: 'rgba(163,230,53,0.12)', color: '#a3e635' }}>{item.n}</span>
-                  <span className="text-sm" style={{ color: '#6b80a3' }}>{item.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative">
-            <div className="rounded-3xl border overflow-hidden" style={{ borderColor: '#1e2d42', background: '#0c1120' }}>
-              <div className="flex items-center gap-2 border-b px-5 py-4" style={{ borderColor: '#1e2d42' }}>
-                <span className="h-2.5 w-2.5 rounded-full" style={{ background: '#ef4444' }} />
-                <span className="h-2.5 w-2.5 rounded-full" style={{ background: '#f59e0b' }} />
-                <span className="h-2.5 w-2.5 rounded-full" style={{ background: '#22c55e' }} />
-                <div className="ml-3 flex items-center gap-2">
-                  <NexusLogo size={18} />
-                  <span className="text-xs font-medium" style={{ color: '#6b80a3' }}>Nueva empresa</span>
-                </div>
-              </div>
-              <div className="p-6">
-                {step === 'form' && (
-                  <div className="space-y-4">
-                    <p className="text-sm font-semibold mb-5" style={{ color: '#e8f0fe' }}>Cuéntanos sobre tu empresa</p>
-                    {[
-                      { label: 'Nombre de la empresa',    value: 'Luz del Norte ESP'     },
-                      { label: 'Ciudad',                   value: 'Medellín, Antioquia'   },
-                      { label: 'NIT',                      value: '900.123.456-7'         },
-                      { label: 'Administrador principal',  value: 'Carlos Mejía Restrepo' },
-                      { label: 'Correo de acceso',         value: 'cmejia@luzdelnorte.co' },
-                    ].map((field) => (
-                      <div key={field.label}>
-                        <p className="text-xs mb-1.5" style={{ color: '#3a4d6b' }}>{field.label}</p>
-                        <div className="rounded-xl border px-4 py-3 text-sm" style={{ borderColor: '#243650', background: '#101828', color: '#8899cc' }}>{field.value}</div>
-                      </div>
-                    ))}
-                    <button onClick={handleCreate} className="btn-primary relative w-full inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold mt-2">
-                      <span className="relative z-10">Crear empresa en Nexus</span>
-                      <ArrowRight className="relative z-10 h-4 w-4" />
-                    </button>
-                  </div>
-                )}
-                {step === 'creating' && (
-                  <div className="flex flex-col items-center justify-center py-12 gap-4">
-                    <div className="h-12 w-12 rounded-full border-2 animate-spin" style={{ borderColor: '#38bdf8', borderTopColor: 'transparent' }} />
-                    <p className="text-sm font-medium" style={{ color: '#e8f0fe' }}>Configurando tu empresa...</p>
-                    <p className="text-xs" style={{ color: '#3a4d6b' }}>Esto toma solo unos segundos</p>
-                  </div>
-                )}
-                {step === 'done' && (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-center py-6">
-                      <div className="h-16 w-16 rounded-full flex items-center justify-center" style={{ background: 'rgba(163,230,53,0.15)' }}>
-                        <Check className="h-8 w-8" style={{ color: '#a3e635' }} />
-                      </div>
-                    </div>
-                    <p className="text-center text-base font-semibold" style={{ color: '#e8f0fe' }}>¡Luz del Norte ESP está lista!</p>
-                    <div className="space-y-3 mt-6">
-                      {['Tu espacio privado fue creado', 'El sistema está configurado y listo', 'Carlos Mejía ya puede ingresar', 'Listos para la primera facturación'].map((item, i) => (
-                        <div key={i} className="flex items-center gap-3 rounded-xl px-4 py-3" style={{ background: 'rgba(163,230,53,0.06)', border: '1px solid rgba(163,230,53,0.15)' }}>
-                          <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: '#a3e635' }} />
-                          <span className="text-sm" style={{ color: '#6b80a3' }}>{item}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <button onClick={() => setStep('form')} className="w-full text-xs text-center mt-2 underline" style={{ color: '#3a4d6b' }}>Ver de nuevo</button>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="absolute -bottom-4 -right-4 rounded-2xl border px-5 py-3 flex items-center gap-2" style={{ background: '#0c1120', borderColor: '#1e2d42' }}>
-              <Zap className="h-4 w-4" style={{ color: '#fb923c' }} />
-              <span className="text-xs font-medium" style={{ color: '#6b80a3' }}>Menos de 2 minutos</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────
-   PRICING
-───────────────────────────────────────────────────────────── */
-function Pricing() {
-  const [annual, setAnnual] = useState(false);
-
-  const plans = [
-    {
-      name:     'Básico',
-      desc:     'Para ESPs que están dando el salto a una plataforma moderna.',
-      price:    { monthly: 99,  annual: 79  },
-      currency: 'USD',
-      period:   '/mes',
-      accent:   '#38bdf8',
-      popular:  false,
-      cta:      'Empezar ahora',
-      features: [
-        'Hasta 500 clientes activos',
-        'Facturación automática',
-        'Módulo de cobros',
-        'Comprobantes en impresora térmica',
-        'Reportes básicos (PDF)',
-        'Hasta 3 usuarios',
-        'Soporte por correo',
-      ],
-      notIncluded: [
-        'Exportación a XLSX',
-        'Módulo de financiaciones',
-        'API REST',
-      ],
-    },
-    {
-      name:     'Profesional',
-      desc:     'Para ESPs con operación activa que necesitan el ciclo completo.',
-      price:    { monthly: 199, annual: 159 },
-      currency: 'USD',
-      period:   '/mes',
-      accent:   '#a3e635',
-      popular:  true,
-      cta:      'Empezar ahora',
-      features: [
-        'Hasta 2.500 clientes activos',
-        'Todos los módulos incluidos',
-        'Facturación + cobros + financiaciones',
-        'Reportes avanzados con exportación XLSX',
-        'Lecturas de medidores (importación XLSX)',
-        'Hasta 10 usuarios',
-        'Comprobantes en impresora térmica',
-        'Soporte prioritario (< 24h)',
-      ],
-      notIncluded: [
-        'API REST',
-      ],
-    },
-    {
-      name:     'Empresa',
-      desc:     'Para ESPs grandes o redes con múltiples sedes y necesidades específicas.',
-      price:    null,
-      currency: '',
-      period:   '',
-      accent:   '#fb923c',
-      popular:  false,
-      cta:      'Hablar con el equipo',
-      features: [
-        'Clientes ilimitados',
-        'Usuarios ilimitados',
-        'Todos los módulos incluidos',
-        'API REST para integraciones',
-        'Onboarding personalizado',
-        'Migración de datos asistida',
-        'Gerente de cuenta dedicado',
-        'SLA de respuesta garantizado',
-        'Configuración de marca propia',
-      ],
-      notIncluded: [],
-    },
-  ];
-
-  return (
-    <section id="precios" className="relative py-32 border-t" style={{ borderColor: '#1e2d42', background: '#080e1c' }}>
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(56,189,248,0.05) 0%, transparent 70%)' }} />
-
-      <div className="relative z-10 mx-auto max-w-7xl px-6">
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <p className="text-xs font-medium tracking-widest uppercase mb-4" style={{ color: '#a3e635' }}>Precios</p>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: '400', color: '#e8f0fe', lineHeight: '1.1', marginBottom: '1.5rem' }}>
-            Transparente.<br />
-            <span style={{ fontStyle: 'italic', color: '#6b80a3' }}>Sin sorpresas al final del mes.</span>
-          </h2>
-          <p style={{ color: '#6b80a3', lineHeight: '1.7' }}>
-            Todos los planes incluyen actualizaciones, soporte en español
-            y acceso desde cualquier dispositivo. Sin costos ocultos.
-          </p>
-        </div>
-
-        {/* Toggle */}
-        <div className="flex items-center justify-center gap-4 mb-12">
-          <span className="text-sm font-medium" style={{ color: annual ? '#3a4d6b' : '#e8f0fe' }}>Mensual</span>
-          <button
-            onClick={() => setAnnual(!annual)}
-            className="relative h-7 w-14 rounded-full border transition-colors duration-300"
-            style={{ background: annual ? '#a3e63520' : '#1e2d42', borderColor: annual ? '#a3e635' : '#243650' }}
-          >
-            <span
-              className="absolute top-1 h-5 w-5 rounded-full transition-all duration-300"
-              style={{ background: annual ? '#a3e635' : '#6b80a3', left: annual ? 'calc(100% - 24px)' : '4px' }}
-            />
-          </button>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium" style={{ color: annual ? '#e8f0fe' : '#3a4d6b' }}>Anual</span>
-            <span className="rounded-full px-2 py-0.5 text-xs font-semibold" style={{ background: 'rgba(163,230,53,0.15)', color: '#a3e635' }}>
-              Ahorra 20%
+            <a href="#cotizacion" className="btn btn-solid btn-sm hidden sm:inline-flex">
+              Solicitar cotización
+            </a>
+            <button
+              className="lg:hidden btn btn-line btn-sm"
+              onClick={() => setAbierto((v) => !v)}
+              aria-expanded={abierto}
+              aria-controls="menu-movil"
+            >
+              {abierto ? 'Cerrar' : 'Menú'}
+            </button>
+          </div>
+        </div>
+
+        {abierto && (
+          <div id="menu-movil" className="lg:hidden pb-5 a-settle">
+            <nav className="card p-3 flex flex-col gap-1" aria-label="Principal, móvil">
+              {NAV.map((i) => (
+                <a
+                  key={i.t}
+                  href={i.h}
+                  onClick={() => setAbierto(false)}
+                  className="btn btn-quiet"
+                  style={{ justifyContent: 'flex-start', fontWeight: 500 }}
+                >
+                  {i.t}
+                </a>
+              ))}
+              <a href="#cotizacion" onClick={() => setAbierto(false)} className="btn btn-solid mt-1">
+                Solicitar cotización
+              </a>
+            </nav>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════════════════ */
+
+function Hero() {
+  return (
+    <section
+      id="inicio"
+      className="relative overflow-hidden"
+      style={{ paddingTop: 148, paddingBottom: 'clamp(3.5rem, 7vw, 6rem)' }}
+    >
+      {/* Un halo verde muy tenue detrás del titular. Es el único
+          efecto atmosférico de la página. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute"
+        style={{
+          top: -260, left: '50%', transform: 'translateX(-50%)',
+          width: 900, height: 620,
+          background: 'radial-gradient(ellipse at center, rgba(14,122,69,0.07) 0%, transparent 68%)',
+        }}
+      />
+
+      <div className="relative mx-auto w-full max-w-[1140px] px-5 sm:px-8">
+        <div className="text-center mx-auto max-w-[52rem]">
+          <div className="a-settle pill">
+            <span
+              className="inline-block"
+              style={{ width: 6, height: 6, borderRadius: 99, background: 'var(--color-verde)' }}
+              aria-hidden
+            />
+            Plataforma para empresas de servicios públicos · Colombia
+          </div>
+
+          <h1
+            className="a-settle d-1"
+            style={{ fontSize: 'clamp(2.4rem, 6vw, 4.6rem)', marginTop: 30, lineHeight: 1.06 }}
+          >
+            Cada lectura, cada factura,{' '}
+            <span style={{ color: 'var(--color-verde)' }}>cada peso recaudado.</span>
+          </h1>
+
+          <p
+            className="a-settle d-2 mx-auto"
+            style={{ fontSize: 18.5, lineHeight: 1.7, color: 'var(--color-ink-2)', maxWidth: '46rem', marginTop: 26 }}
+          >
+            Nexus conecta la toma de lecturas en campo con la facturación, el recaudo,
+            la cartera y el presupuesto de su empresa de servicios públicos.
+            Un solo sistema, una sola verdad sobre la operación.
+          </p>
+
+          <div className="a-settle d-3 flex flex-wrap items-center justify-center gap-3" style={{ marginTop: 34 }}>
+            <a href="#cotizacion" className="btn btn-solid">
+              Solicitar cotización <ArrowRight className="h-4 w-4" aria-hidden />
+            </a>
+            <a href="#plataforma" className="btn btn-line">Ver los módulos</a>
+          </div>
+
+          <p
+            className="a-settle d-4 flex items-center justify-center gap-2 flex-wrap"
+            style={{ fontSize: 14, color: 'var(--color-ink-3)', marginTop: 26 }}
+          >
+            <NexusMark {...LOGO.enLinea} />
+            En producción con una empresa prestadora
+            <strong style={{ color: 'var(--color-ink-2)', fontWeight: 600 }}>desde 2024</strong>
+          </p>
+        </div>
+
+        {/* La firma de la página */}
+        <div className="a-settle d-4" style={{ marginTop: 'clamp(3.5rem, 7vw, 5.5rem)' }}>
+          <div className="flex items-center justify-between gap-4 mb-3.5 flex-wrap px-1">
+            <span className="label">Un ciclo completo, de la lectura al recaudo</span>
+            <span style={{ fontSize: 12.5, color: 'var(--color-ink-3)' }}>
+              Datos de demostración · pase el cursor para pausar
             </span>
           </div>
+          <InvoiceDemo />
         </div>
+      </div>
+    </section>
+  );
+}
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className="relative flex flex-col rounded-3xl border p-8 card-glow"
-              style={{
-                borderColor: plan.popular ? plan.accent + '50' : '#1e2d42',
-                background:  plan.popular ? '#0c1120' : '#060912',
-                boxShadow:   plan.popular ? `0 0 0 1px ${plan.accent}30, 0 30px 80px -20px ${plan.accent}15` : 'none',
-              }}
-            >
-              {/* Popular badge */}
-              {plan.popular && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                  <span className="rounded-full px-4 py-1 text-xs font-semibold" style={{ background: plan.accent, color: '#060912' }}>
-                    Más popular
-                  </span>
-                </div>
-              )}
+/* ═══════════════════════════════════════════════════════════════════
+   EN PRODUCCIÓN
+   ═══════════════════════════════════════════════════════════════════ */
 
-              <div className="mb-6">
-                <p className="text-xs font-medium tracking-widest uppercase mb-2" style={{ color: plan.accent }}>
-                  {plan.name}
-                </p>
-                <p className="text-sm leading-relaxed" style={{ color: '#6b80a3' }}>{plan.desc}</p>
-              </div>
+const EN_PRODUCCION = [
+  'Facturación mensual del ciclo completo',
+  'Recaudo con registro y trazabilidad de pagos',
+  'Cartera y acuerdos de pago por cuotas',
+  'PQR con causal, respuesta y seguimiento',
+  'Ejecución presupuestal con CDP y RP',
+  'Reportes exportables de toda la operación',
+];
 
-              {/* Price */}
-              <div className="mb-8 pb-8 border-b" style={{ borderColor: '#1e2d42' }}>
-                {plan.price ? (
-                  <div className="flex items-end gap-1">
-                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '3.5rem', fontWeight: '400', color: '#e8f0fe', lineHeight: '1' }}>
-                      ${annual ? plan.price.annual : plan.price.monthly}
-                    </span>
-                    <span className="pb-2 text-sm" style={{ color: '#6b80a3' }}>
-                      {plan.currency} {plan.period}
-                    </span>
-                  </div>
-                ) : (
-                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: '400', color: '#e8f0fe', lineHeight: '1' }}>
-                    Personalizado
-                  </p>
-                )}
-                {plan.price && annual && (
-                  <p className="text-xs mt-2" style={{ color: '#3a4d6b' }}>
-                    Facturado anualmente · ${plan.price.annual * 12} USD/año
-                  </p>
-                )}
-              </div>
+function Produccion() {
+  return (
+    <Section band>
+      <div className="grid gap-10 lg:grid-cols-2 lg:gap-20 lg:items-center">
+        <Reveal>
+          <Encabezado
+            eyebrow="Operando hoy"
+            titulo={<>Hay una prestadora facturando con Nexus desde 2024.</>}
+            bajada="No es un piloto ni una maqueta. Es una empresa de servicios públicos emitiendo facturas reales, recaudando y rindiendo su presupuesto sobre esta plataforma, mes tras mes."
+          />
+        </Reveal>
 
-              {/* Features */}
-              <ul className="flex-1 space-y-3 mb-8">
-                {plan.features.map((feat) => (
-                  <li key={feat} className="flex items-start gap-3">
-                    <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" style={{ color: plan.accent }} />
-                    <span className="text-sm" style={{ color: '#8899bb' }}>{feat}</span>
+        <Reveal delay={80}>
+          <div className="card" style={{ padding: 'clamp(1.75rem, 3vw, 2.25rem)' }}>
+            <div className="label mb-5">Qué corre en producción</div>
+            <ul className="space-y-4">
+              {EN_PRODUCCION.map((t) => <Item key={t}>{t}</Item>)}
+            </ul>
+          </div>
+        </Reveal>
+      </div>
+    </Section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   EL CONTRASTE
+   ═══════════════════════════════════════════════════════════════════ */
+
+const CONTRASTE = [
+  { a: 'La lectura se anota en una libreta y se digita días después.',
+    b: 'El técnico captura la lectura en campo y llega al sistema el mismo día.' },
+  { a: 'La factura se arma en una hoja de cálculo que solo una persona entiende.',
+    b: 'La factura se liquida con la tarifa parametrizada y se emite en lote.' },
+  { a: 'El recaudo se concilia a mano y la cartera nunca cuadra del todo.',
+    b: 'Cada pago descarga la cartera del suscriptor en el momento del registro.' },
+  { a: 'El presupuesto vive aparte, en otro archivo y con otros números.',
+    b: 'Los CDP y RP se expiden desde el mismo sistema que emite las facturas.' },
+];
+
+function Contraste() {
+  return (
+    <Section>
+      <Reveal>
+        <Encabezado
+          centrado
+          eyebrow="Por qué un solo sistema"
+          titulo={<>Una operación dispersa cuesta más de lo que parece.</>}
+          bajada="Cuando la lectura, la factura, el recaudo y el presupuesto viven en archivos distintos, nadie puede responder con certeza cuánto se facturó, cuánto entró y cuánto falta."
+        />
+      </Reveal>
+
+      <div className="grid gap-5 md:grid-cols-2 max-w-[62rem] mx-auto">
+        <Reveal>
+          <div className="h-full" style={{ padding: 'clamp(1.75rem, 3vw, 2.25rem)' }}>
+            <div className="label mb-6">Sin un sistema único</div>
+            <ul className="space-y-5">
+              {CONTRASTE.map((c) => (
+                <li key={c.a} className="flex items-start gap-3">
+                  <Minus className="h-[17px] w-[17px] shrink-0 mt-[3px]" style={{ color: '#7d8c81' }} aria-hidden />
+                  <span style={{ fontSize: 15, color: 'var(--color-ink-3)', lineHeight: 1.6 }}>{c.a}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Reveal>
+
+        <Reveal delay={80}>
+          <div className="card h-full" style={{ padding: 'clamp(1.75rem, 3vw, 2.25rem)' }}>
+            <div className="label mb-6" style={{ color: 'var(--color-verde)' }}>Con Nexus</div>
+            <ul className="space-y-5">
+              {CONTRASTE.map((c) => (
+                <li key={c.b} className="flex items-start gap-3">
+                  <Check className="h-[17px] w-[17px] shrink-0 mt-[3px]" style={{ color: 'var(--color-verde)' }} aria-hidden />
+                  <span style={{ fontSize: 15, color: 'var(--color-ink)', lineHeight: 1.6, fontWeight: 500 }}>{c.b}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Reveal>
+      </div>
+    </Section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MÓDULOS
+   ═══════════════════════════════════════════════════════════════════ */
+
+const MODULOS = [
+  { ic: SlidersHorizontal, nom: 'Configuración y catálogos', des: 'Deja todo listo para su empresa antes del primer ciclo.',
+    items: ['Catálogos y datos maestros', 'Tarifas con histórico de cambios', 'Plantilla de factura editable'] },
+  { ic: Users, nom: 'Clientes y contratos', des: 'La ficha del suscriptor como fuente única de verdad.',
+    items: ['Búsqueda por contrato o nombre', 'Deuda consolidada por cliente', 'Histórico de facturación'] },
+  { ic: Gauge, nom: 'Lecturas', des: 'El ciclo de lectura, controlado de principio a fin.',
+    items: ['Carga masiva desde Excel', 'Reporte de clientes sin lectura', 'Impresión del lote de lectura'] },
+  { ic: Receipt, nom: 'Facturación', des: 'El núcleo: de la lectura a la factura emitida.',
+    items: ['Generación en lote desde el ciclo', 'Notas crédito con aprobación', 'Recálculo e historial de cambios', 'Envío de la factura por correo'] },
+  { ic: Banknote, nom: 'Recaudo', des: 'Cada pago registrado, con rastro.',
+    items: ['Registro de pagos por canal', 'Reporte de cortes', 'Conciliación por periodo'] },
+  { ic: HandCoins, nom: 'Cartera y financiación', des: 'Recuperar sin perder el control del acuerdo.',
+    items: ['Cartera por suscriptor y por edad', 'Acuerdos de pago por cuotas', 'Abono y seguimiento de cuota'] },
+  { ic: MessagesSquare, nom: 'PQR', des: 'Peticiones, quejas y reclamos en un solo expediente.',
+    items: ['Radicación y causal', 'Respuestas y trazabilidad', 'Seguimiento de estado'] },
+  { ic: Landmark, nom: 'Presupuesto público', des: 'La ejecución presupuestal, dentro del mismo sistema.',
+    items: ['Rubros, cuentas y terceros', 'CDP y RP con certificado', 'Seguimiento de la ejecución'] },
+  { ic: BarChart3, nom: 'Reportes', des: 'Responder con cifras, no con estimaciones.',
+    items: ['Facturación, recaudo y cartera', 'Tendencia y comportamiento de tarifas', 'Exportación a hoja de cálculo'] },
+  { ic: ShieldCheck, nom: 'Usuarios y roles', des: 'Cada persona ve lo que le corresponde.',
+    items: ['Perfiles y permisos', 'Control de acceso por módulo', 'Registro de actividad'] },
+  { ic: Building2, nom: 'Varias empresas', des: 'Cada prestadora con su información aparte.',
+    items: ['Datos aislados por empresa', 'Parametrización independiente', 'Administración central'] },
+  { ic: Plug, nom: 'Integración', des: 'Conectar Nexus con lo que la empresa ya usa.',
+    items: ['Conexión con otros sistemas', 'Conexión con la aplicación de lectura', 'Conexiones a la medida según el alcance'] },
+];
+
+function Modulos() {
+  return (
+    <Section id="plataforma" band>
+      <Reveal>
+        <Encabezado
+          centrado
+          eyebrow="La plataforma"
+          titulo={<>Todo lo que una prestadora hace en el mes, en un solo lugar.</>}
+          bajada="Los módulos comparten los mismos clientes, las mismas tarifas y el mismo periodo, así que las cifras coinciden entre áreas sin conciliar nada a mano."
+        />
+      </Reveal>
+
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {MODULOS.map((m, i) => (
+          <Reveal key={m.nom} delay={(i % 3) * 70}>
+            <article className="card card-hover h-full" style={{ padding: '1.75rem' }}>
+              <Icono><m.ic className="h-[21px] w-[21px]" strokeWidth={1.75} /></Icono>
+              <h3 className="mt-4" style={{ fontSize: 17.5 }}>{m.nom}</h3>
+              <p className="mt-2" style={{ fontSize: 14.5, color: 'var(--color-ink-3)', lineHeight: 1.6 }}>
+                {m.des}
+              </p>
+              <ul className="mt-5 space-y-2.5">
+                {m.items.map((it) => (
+                  <li key={it} className="flex items-start gap-2.5">
+                    <span
+                      className="shrink-0"
+                      style={{ width: 5, height: 5, marginTop: 9, borderRadius: 99, background: 'var(--color-verde)', opacity: 0.55 }}
+                      aria-hidden
+                    />
+                    <span style={{ fontSize: 14, color: 'var(--color-ink-2)', lineHeight: 1.55 }}>{it}</span>
                   </li>
                 ))}
-                {plan.notIncluded.map((feat) => (
-                  <li key={feat} className="flex items-start gap-3 opacity-40">
-                    <div className="h-4 w-4 shrink-0 mt-0.5 rounded-full border flex items-center justify-center" style={{ borderColor: '#3a4d6b' }}>
-                      <span className="text-[10px]" style={{ color: '#3a4d6b' }}>—</span>
+              </ul>
+            </article>
+          </Reveal>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   APLICACIÓN DE LECTURA PARA TÉCNICOS
+   ═══════════════════════════════════════════════════════════════════ */
+
+const CAMPO_INCLUYE = [
+  { ic: Smartphone, t: 'Captura en campo', d: 'Flujo simple para el personal técnico autorizado, pensado para la ruta y no para el escritorio.' },
+  { ic: ScanLine,   t: 'Lectura asistida por foto', d: 'La aplicación lee el número del medidor desde la fotografía y lo propone. El técnico confirma o corrige.' },
+  { ic: Users,      t: 'Control por técnico', d: 'Gestión de los accesos del personal de campo según el plan contratado.' },
+  { ic: Plug,       t: 'Conexión con Nexus', d: 'La lectura entra directo al ciclo de facturación, sin volver a digitarla.' },
+  { ic: LifeBuoy,   t: 'Soporte y continuidad', d: 'Nosotros mantenemos la aplicación funcionando, con acompañamiento y correcciones incluidas.' },
+];
+
+function Campo() {
+  return (
+    <Section id="campo">
+      <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 lg:items-center">
+        <div>
+          <Reveal>
+            <Encabezado
+              eyebrow="Solución de campo"
+              titulo={<>La lectura deja de ser el eslabón débil.</>}
+              bajada="La aplicación de lectura para técnicos toma el registro del medidor en la misma ruta: el técnico saca la foto, la aplicación propone el número y él confirma. Al conectarse con Nexus, el dato pasa del medidor a la factura sin libreta y sin volver a digitarlo."
+            />
+          </Reveal>
+
+          <Reveal delay={80}>
+            <div
+              className="card flex items-start gap-4"
+              style={{ padding: '1.375rem 1.5rem', background: 'var(--color-azul-tint)', borderColor: '#cfe4ef', boxShadow: 'none' }}
+            >
+              <Icono tono="azul" size={40}><ScanLine className="h-[19px] w-[19px]" strokeWidth={1.75} /></Icono>
+              <div>
+                <div className="label mb-1.5" style={{ color: 'var(--color-azul)' }}>Alcance del plan base</div>
+                <p style={{ fontSize: 14.5, color: 'var(--color-ink-2)', lineHeight: 1.65 }}>
+                  El plan base no guarda el histórico de las fotos capturadas. Las conexiones con
+                  otros sistemas se revisan y se cotizan aparte.
+                </p>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+
+        <Reveal delay={120}>
+          <ReaderApp />
+        </Reveal>
+      </div>
+
+      <Reveal className="mt-14">
+        <div className="label mb-6">Qué incluye</div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {CAMPO_INCLUYE.map((c) => (
+            <div key={c.t} className="card card-hover h-full" style={{ padding: '1.625rem' }}>
+              <Icono tono="azul"><c.ic className="h-[21px] w-[21px]" strokeWidth={1.75} /></Icono>
+              <h3 className="mt-4" style={{ fontSize: 16.5 }}>{c.t}</h3>
+              <p className="mt-2" style={{ fontSize: 14.5, color: 'var(--color-ink-3)', lineHeight: 1.6 }}>
+                {c.d}
+              </p>
+            </div>
+          ))}
+          <div
+            className="card flex flex-col justify-center h-full"
+            style={{ padding: '1.625rem', background: 'var(--color-paper)', boxShadow: 'none' }}
+          >
+            <p style={{ fontSize: 14.5, color: 'var(--color-ink-2)', lineHeight: 1.65 }}>
+              Se licencia según el tamaño de la operación: suscriptores atendidos, lecturas al mes
+              y número de técnicos.
+            </p>
+            <a href="#soluciones" className="link-ul mt-3" style={{ fontSize: 14.5 }}>
+              Ver las bandas de escala
+            </a>
+          </div>
+        </div>
+      </Reveal>
+    </Section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PRESUPUESTO PÚBLICO
+   ═══════════════════════════════════════════════════════════════════ */
+
+const PRESUPUESTO: [typeof Landmark, string, string][] = [
+  [Landmark,   'Rubros y cuentas', 'Estructura presupuestal parametrizada según el alcance definido para la empresa.'],
+  [Users,      'Terceros y proveedores', 'Registro y búsqueda de terceros asociados a la ejecución.'],
+  [FileCheck2, 'CDP', 'Certificado de disponibilidad presupuestal, con su consecutivo y su certificado imprimible.'],
+  [Stamp,      'RP', 'Registro presupuestal expedido contra el CDP, con certificado y trazabilidad.'],
+  [BarChart3,  'Seguimiento', 'Consulta de la ejecución y del saldo disponible por rubro.'],
+];
+
+/* Un CDP tal como sale del sistema. Datos de ejemplo. */
+function Certificado() {
+  return (
+    <div className="card overflow-hidden" style={{ boxShadow: 'var(--shadow-lift)' }}>
+      <div
+        className="flex items-start justify-between gap-4"
+        style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--color-line)' }}
+      >
+        <div>
+          <div className="label" style={{ fontSize: 9.5 }}>Certificado de disponibilidad presupuestal</div>
+          <div className="num" style={{ fontSize: 19, fontWeight: 600, color: 'var(--color-ink)', marginTop: 4 }}>
+            CDP 2026-0142
+          </div>
+        </div>
+        <Icono tono="verde" size={40}><FileCheck2 className="h-[19px] w-[19px]" strokeWidth={1.75} /></Icono>
+      </div>
+
+      <div style={{ padding: '1.375rem 1.5rem' }}>
+        <div className="space-y-4">
+          {[
+            ['Rubro', '2.1.2.02.02.008'],
+            ['Objeto', 'Mantenimiento de redes de distribución'],
+            ['Vigencia fiscal', '2026'],
+            ['Fecha de expedición', '12 ago 2026'],
+          ].map(([r, v]) => (
+            <div key={r}>
+              <div className="label" style={{ fontSize: 9 }}>{r}</div>
+              <div
+                className={r === 'Objeto' ? '' : 'num'}
+                style={{ fontSize: 13.5, color: 'var(--color-ink)', fontWeight: 500, marginTop: 2 }}
+              >
+                {v}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div
+          className="flex items-baseline justify-between gap-3 mt-5"
+          style={{ background: 'var(--color-ink)', borderRadius: 12, padding: '13px 16px' }}
+        >
+          <span className="label" style={{ fontSize: 9.5, color: '#98a89d' }}>Valor certificado</span>
+          <span
+            className="num"
+            style={{ fontSize: 21, fontWeight: 600, color: '#ffffff', letterSpacing: '-0.02em' }}
+          >
+            $ 48.500.000
+          </span>
+        </div>
+
+        <div
+          className="flex items-baseline justify-between gap-3 mt-3"
+          style={{ background: 'var(--color-verde-tint)', borderRadius: 12, padding: '11px 16px' }}
+        >
+          <span className="label" style={{ fontSize: 9.5, color: 'var(--color-verde-deep)' }}>
+            Saldo del rubro
+          </span>
+          <span className="num" style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--color-verde-deep)' }}>
+            $ 211.300.000
+          </span>
+        </div>
+      </div>
+
+      <div
+        className="flex items-center justify-between gap-4"
+        style={{ padding: '1rem 1.5rem', background: 'var(--color-paper)', borderTop: '1px dashed #cdd8ce' }}
+      >
+        <span className="num" style={{ fontSize: 10.5, color: 'var(--color-ink-3)', lineHeight: 1.5 }}>
+          Documento de ejemplo<br />generado por Nexus
+        </span>
+        <span
+          className="flex flex-col items-center justify-center"
+          style={{
+            border: '2px solid var(--color-verde)', borderRadius: 9,
+            color: 'var(--color-verde)', transform: 'rotate(-8deg)', padding: '5px 12px',
+          }}
+        >
+          <span className="display-wide" style={{ fontSize: 14, fontWeight: 700, letterSpacing: '0.05em', lineHeight: 1 }}>
+            EXPEDIDO
+          </span>
+          <span className="num" style={{ fontSize: 7.5, letterSpacing: '0.08em', marginTop: 2 }}>
+            12 AGO 2026
+          </span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function Presupuesto() {
+  return (
+    <Section id="presupuesto" band>
+      <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+        <div>
+          <Reveal>
+            <Encabezado
+              eyebrow="Prestadoras con presupuesto público"
+              titulo={<>CDP y RP se expiden en el mismo sistema que emite las facturas.</>}
+              bajada="Muchas empresas municipales llevan la ejecución presupuestal en un archivo aparte, con números que no coinciden con los del área comercial. En Nexus el presupuesto es un módulo más: los rubros, las cuentas, los terceros y los certificados viven junto al recaudo que los alimenta."
+            />
+          </Reveal>
+
+          <Reveal delay={80}>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {PRESUPUESTO.map(([Ic, t, d], i) => (
+                <div
+                  key={t}
+                  className={`card card-hover ${i === PRESUPUESTO.length - 1 ? 'sm:col-span-2' : ''}`}
+                  style={{ padding: '1.375rem' }}
+                >
+                  <div className="flex items-center gap-3">
+                    <Icono size={36}><Ic className="h-[17px] w-[17px]" strokeWidth={1.75} /></Icono>
+                    <div className="display-wide" style={{ fontSize: 15.5, fontWeight: 700, color: 'var(--color-ink)' }}>
+                      {t}
                     </div>
-                    <span className="text-sm" style={{ color: '#3a4d6b' }}>{feat}</span>
+                  </div>
+                  <p className="mt-2.5" style={{ fontSize: 14, color: 'var(--color-ink-2)', lineHeight: 1.6 }}>
+                    {d}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+
+        <Reveal delay={120}>
+          <div className="lg:sticky lg:top-32">
+            <Certificado />
+          </div>
+        </Reveal>
+      </div>
+    </Section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   IMPLEMENTACIÓN — una secuencia real, por eso va numerada
+   ═══════════════════════════════════════════════════════════════════ */
+
+const IMPLEMENTACION = [
+  { ic: SearchCheck, n: '01', t: 'Diagnóstico y alcance', d: 'Revisamos su operación, el número de suscriptores y los módulos que necesita. De aquí sale la cotización.' },
+  { ic: SlidersHorizontal, n: '02', t: 'Parametrización',       d: 'Configuramos catálogos, tarifas, estratos, reglas de liquidación y el diseño de su factura.' },
+  { ic: Database, n: '03', t: 'Carga de información',  d: 'Subimos la base de suscriptores y los saldos con los que arranca la operación.' },
+  { ic: FileCheck2, n: '04', t: 'Validación funcional',  d: 'Corremos un ciclo de prueba y comparamos las cifras contra su facturación actual, factura por factura.' },
+  { ic: GraduationCap, n: '05', t: 'Capacitación',          d: 'Formamos a los equipos de comercial, cartera, PQR y presupuesto en el módulo que le corresponde a cada uno.' },
+  { ic: Rocket, n: '06', t: 'Salida en vivo',        d: 'Emitimos el primer ciclo real con acompañamiento directo del equipo de Wavenet.' },
+  { ic: LifeBuoy, n: '07', t: 'Continuidad',           d: 'Acompañamiento, vigilancia del servicio, correcciones y mejoras continuas a partir del uso real.' },
+];
+
+function Implementacion() {
+  return (
+    <Section>
+      <Reveal>
+        <Encabezado
+          centrado
+          eyebrow="Puesta en marcha"
+          titulo={<>Nadie compra un software; compra el día en que empieza a funcionar.</>}
+          bajada="La implementación es parte de la propuesta, no un servicio aparte. El paso 04 es el que más tranquilidad da: no salimos en vivo hasta que su ciclo de prueba cuadre contra el que usted ya emite."
+        />
+      </Reveal>
+
+      <ol className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+        {IMPLEMENTACION.map((p, i) => (
+          <Reveal key={p.n} delay={(i % 4) * 60}>
+            <li>
+              <div className="flex items-center gap-3">
+                <Icono size={40}><p.ic className="h-[19px] w-[19px]" strokeWidth={1.75} /></Icono>
+                <span
+                  className="num"
+                  style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--color-ink-3)', letterSpacing: '0.1em' }}
+                >
+                  {p.n}
+                </span>
+              </div>
+              <h3 className="mt-4" style={{ fontSize: 16.5 }}>{p.t}</h3>
+              <p className="mt-2" style={{ fontSize: 14.5, color: 'var(--color-ink-3)', lineHeight: 1.6 }}>
+                {p.d}
+              </p>
+            </li>
+          </Reveal>
+        ))}
+      </ol>
+    </Section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SOLUCIONES Y ESCALA — sin precios: todo bajo cotización
+   ═══════════════════════════════════════════════════════════════════ */
+
+const SOLUCIONES = [
+  {
+    nom: 'Nexus ESP',
+    lema: 'El sistema comercial y administrativo de la prestadora.',
+    acento: 'var(--color-verde)', tinte: 'var(--color-verde-tint)', destacado: false,
+    incluye: [
+      'Licencia de uso e implementación inicial',
+      'Configuración, Facturación, Recaudo, PQR y Presupuesto',
+      'Parametrización base según el alcance contratado',
+      'El sistema alojado en la nube, uno por empresa',
+      'Soporte operativo y funcional de primer nivel',
+      'Correcciones y vigilancia permanente del servicio',
+      'Bolsa básica para ajustes menores o remodelación de la factura',
+    ],
+    escalaRot: 'Se licencia por cantidad de usuarios o suscriptores',
+    escala: ['Hasta 2.500', '2.501 – 5.000', '5.001 – 10.000', '10.001 – 20.000', 'Más de 20.000'],
+  },
+  {
+    nom: 'Nexus + Aplicación de lectura',
+    lema: 'Una operación conectada entre campo, facturación y control.',
+    acento: 'var(--color-coral-text)', tinte: 'var(--color-coral-tint)', destacado: true,
+    incluye: [
+      'Todo lo de Nexus ESP: Configuración, Facturación, Recaudo, PQR y Presupuesto',
+      'Todo lo de la aplicación de lectura para técnicos',
+      'Trazabilidad entre la lectura, la operación de campo y el proceso comercial',
+      'Menos reprocesos y menos errores por digitación manual',
+      'Una sola implementación, un solo acompañamiento',
+    ],
+    escalaRot: 'Se licencia por cantidad de usuarios o suscriptores',
+    escala: ['Hasta 2.500', '2.501 – 5.000', '5.001 – 10.000', '10.001 – 20.000', 'Más de 20.000'],
+  },
+  {
+    nom: 'Aplicación de lectura para técnicos',
+    lema: 'La toma de lecturas en campo, asistida por foto.',
+    acento: 'var(--color-azul)', tinte: 'var(--color-azul-tint)', destacado: false,
+    incluye: [
+      'Aplicación móvil para el personal técnico autorizado',
+      'Lectura asistida: la aplicación propone el número desde la foto',
+      'Control de accesos por técnico',
+      'Mantenemos la aplicación funcionando, con soporte incluido',
+      'Integración con Nexus ESP cuando se adquiere el conjunto',
+    ],
+    escalaRot: 'Se licencia por escala operativa',
+    escala: [
+      'Hasta 2.500 suscriptores · 2.500 lecturas/mes · 5 técnicos',
+      '2.501 – 5.000 · 5.000 lecturas/mes · 10 técnicos',
+      '5.001 – 10.000 · 10.000 lecturas/mes · 20 técnicos',
+      '10.001 – 20.000 · 20.000 lecturas/mes · 40 técnicos',
+      'Más de 20.000 · a definir según la operación',
+    ],
+  },
+];
+
+function Soluciones() {
+  return (
+    <Section id="soluciones" band>
+      <Reveal>
+        <Encabezado
+          centrado
+          eyebrow="Soluciones y escala"
+          titulo={<>Tres formas de contratar. Todas bajo cotización.</>}
+          bajada={
+            <>
+              No publicamos tarifas porque ninguna empresa prestadora se parece a otra.
+              El modelo siempre es el mismo — un <strong style={{ color: 'var(--color-ink)', fontWeight: 600 }}>pago
+              único de licencia e implementación</strong> y una <strong style={{ color: 'var(--color-ink)', fontWeight: 600 }}>mensualidad
+              de soporte y continuidad</strong> — y la cifra se define después de revisar su operación.
+            </>
+          }
+        />
+      </Reveal>
+
+      <div className="grid gap-5 lg:grid-cols-3">
+        {SOLUCIONES.map((s, i) => (
+          <Reveal key={s.nom} delay={i * 80}>
+            <article
+              className="card flex flex-col h-full"
+              style={{
+                padding: 'clamp(1.75rem, 3vw, 2.125rem)',
+                borderColor: s.destacado ? 'rgba(194,58,24,0.3)' : undefined,
+                boxShadow: s.destacado ? 'var(--shadow-lift)' : undefined,
+              }}
+            >
+              {s.destacado && (
+                <span
+                  className="label self-start mb-4"
+                  style={{
+                    color: s.acento, background: s.tinte,
+                    padding: '5px 11px', borderRadius: 999, fontSize: 10,
+                  }}
+                >
+                  Mayor integración
+                </span>
+              )}
+
+              <h3 style={{ fontSize: 20 }}>{s.nom}</h3>
+              <p className="mt-2" style={{ fontSize: 15, color: 'var(--color-ink-3)', lineHeight: 1.6 }}>
+                {s.lema}
+              </p>
+
+              <div className="label mt-7 mb-4">Qué incluye</div>
+              <ul className="space-y-3 grow">
+                {s.incluye.map((it) => <Item key={it} color={s.acento}>{it}</Item>)}
+              </ul>
+
+              <div className="label mt-7 mb-3">{s.escalaRot}</div>
+              <ul className="space-y-2">
+                {s.escala.map((e) => (
+                  <li
+                    key={e}
+                    className="num"
+                    style={{
+                      fontSize: 12.5, color: 'var(--color-ink-2)', lineHeight: 1.5,
+                      background: 'var(--color-paper)', borderRadius: 8, padding: '7px 11px',
+                    }}
+                  >
+                    {e}
                   </li>
                 ))}
               </ul>
 
-              {/* CTA */}
-              <a
-                href="#contacto"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-sm font-semibold transition-all duration-200"
-                style={
-                  plan.popular
-                    ? { background: plan.accent, color: '#060912' }
-                    : { background: 'transparent', border: `1px solid ${plan.accent}40`, color: plan.accent }
-                }
-              >
-                {plan.cta}
-                <ArrowRight className="h-4 w-4" />
-              </a>
-            </div>
-          ))}
-        </div>
-
-        {/* Bottom note */}
-        <p className="text-center mt-10 text-sm" style={{ color: '#3a4d6b' }}>
-          ¿No sabes cuál plan es el tuyo?{' '}
-          <a href="#contacto" className="underline" style={{ color: '#6b80a3' }}>
-            Cuéntanos sobre tu ESP y te recomendamos.
-          </a>
-        </p>
+              <div className="mt-7 pt-6" style={{ borderTop: '1px solid var(--color-line-2)' }}>
+                <div className="label mb-1.5">Valor</div>
+                <div className="display-wide" style={{ fontSize: 21, fontWeight: 700, color: 'var(--color-ink)' }}>
+                  Bajo cotización
+                </div>
+                <a href="#cotizacion" className={`btn ${s.destacado ? 'btn-solid' : 'btn-line'} w-full mt-4`}>
+                  Cotizar esta opción <ArrowRight className="h-4 w-4" aria-hidden />
+                </a>
+              </div>
+            </article>
+          </Reveal>
+        ))}
       </div>
-    </section>
+
+    </Section>
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
-   FAQ
-───────────────────────────────────────────────────────────── */
-function FAQ() {
-  const [open, setOpen] = useState<number | null>(null);
+/* ═══════════════════════════════════════════════════════════════════
+   PREGUNTAS
+   ═══════════════════════════════════════════════════════════════════ */
 
-  const faqs = [
-    {
-      q: '¿Necesito instalar algo para usar Nexus?',
-      a: 'No. Nexus funciona completamente en el navegador. Accedes desde cualquier computador, tablet o celular sin instalar ningún programa ni depender del sistema operativo.',
-    },
-    {
-      q: '¿Mis datos están separados de los de otras empresas?',
-      a: 'Sí, completamente. Cada empresa en Nexus tiene su propio espacio privado e independiente. Tus clientes, facturas y cobros son exclusivamente tuyos y no tienen ningún contacto con la información de otras ESPs.',
-    },
-    {
-      q: '¿Cuánto tiempo toma la implementación?',
-      a: 'Tu empresa queda activa en minutos. Si tienes datos históricos que quieres migrar desde tu sistema anterior, el tiempo depende del volumen de información, pero siempre te acompañamos en ese proceso.',
-    },
-    {
-      q: '¿Puedo probar Nexus antes de pagar?',
-      a: 'Sí. Agendamos una demo personalizada donde te mostramos la plataforma funcionando con datos reales de una ESP colombiana. Respondemos todas tus preguntas antes de que tomes cualquier decisión.',
-    },
-    {
-      q: '¿Nexus funciona para empresas de gas o agua también?',
-      a: 'Nexus fue diseñado específicamente para empresas de energía eléctrica y su regulación CREG. Para otros servicios públicos, conversemos — dependiendo del modelo operativo, puede haber casos en que se adapte.',
-    },
-    {
-      q: '¿Qué pasa si necesito más usuarios de los del plan?',
-      a: 'Puedes agregar usuarios adicionales por un valor mensual por usuario extra. No necesitas cambiar de plan para hacerlo. En el plan Empresa los usuarios son ilimitados.',
-    },
-    {
-      q: '¿Qué tipo de soporte ofrecen?',
-      a: 'Todos los planes incluyen soporte en español por personas que conocen la operación de una ESP. El plan Básico tiene soporte por correo, el Profesional respuesta garantizada en menos de 24 horas, y el Empresa incluye gerente de cuenta dedicado.',
-    },
-    {
-      q: '¿Están basados en Colombia?',
-      a: 'Sí. Wavenet Dev SAS es una empresa colombiana. Nuestro equipo entiende de primera mano cómo operan las ESPs en el país, su regulación y sus necesidades reales del día a día.',
-    },
-  ];
+const PREGUNTAS: [string, ReactNode][] = [
+  ['¿Cuánto cuesta Nexus?',
+    <>Todos los planes se manejan bajo cotización. El valor depende de tres cosas: la cantidad
+      de usuarios o suscriptores de su empresa, los módulos que necesite y si va a operar con
+      la aplicación de lectura para técnicos. Escríbanos por WhatsApp con el número de
+      suscriptores y le devolvemos una propuesta con el alcance detallado.</>],
+  ['¿Por qué hay un pago único y además una mensualidad?',
+    <>El pago único cubre la licencia, la implementación, la parametrización y la salida en
+      vivo: que la solución quede operando en su empresa, no solamente que le entreguemos unas
+      claves. La mensualidad cubre el alojamiento, el soporte, la vigilancia del servicio,
+      las correcciones y la mejora continua.</>],
+  ['¿Nexus sirve para agua o aseo, o solo para energía?',
+    <>Nexus se parametriza por servicio, tarifa y regla de liquidación, así que la estructura
+      admite otros servicios públicos domiciliarios. Hoy opera en producción en energía. Si su
+      empresa presta otro servicio, lo revisamos en el diagnóstico y lo dejamos por escrito
+      en la cotización.</>],
+  ['Somos una empresa municipal con presupuesto público. ¿Nexus lo maneja?',
+    <>Sí. El módulo de presupuesto expide CDP y RP con su certificado y su consecutivo, y
+      permite hacer seguimiento a la ejecución por rubro. Está en el mismo sistema que emite
+      las facturas, así que la ejecución y el recaudo no viven en archivos distintos.</>],
+  ['¿Podemos traer la información que ya tenemos?',
+    <>La carga de la base de suscriptores y de los saldos de arranque hace parte de la
+      implementación. Las migraciones históricas masivas —años de facturación anterior— se
+      evalúan y se cotizan aparte, porque el esfuerzo depende del estado y del formato de
+      la información.</>],
+  ['¿Qué pasa si crecemos y cambiamos de banda?',
+    <>Las bandas están definidas por rangos de suscriptores justamente para eso. Cuando su
+      base crece y pasa de banda, se ajusta la mensualidad al nuevo rango. Se lo informamos
+      antes, nunca después.</>],
+  ['¿Se puede integrar con el ERP o con otros sistemas que ya usamos?',
+    <>Sí. Nexus puede conectarse con otros sistemas para intercambiar información. Las
+      conexiones especiales, o con sistemas antiguos, no vienen incluidas en el paquete base:
+      las revisamos caso por caso y se cotizan por separado.</>],
+  ['¿Cuánto demora la puesta en marcha?',
+    <>Depende del alcance, del número de suscriptores y del estado de la información que
+      recibamos. Definimos el cronograma en el diagnóstico y queda en la cotización. No
+      salimos en vivo hasta que el ciclo de prueba cuadre contra el que su empresa ya emite.</>],
+];
 
+function Preguntas() {
+  const [abierta, setAbierta] = useState<number | null>(0);
   return (
-    <section id="faq" className="relative py-32 border-t" style={{ borderColor: '#1e2d42' }}>
-      <div className="mx-auto max-w-4xl px-6">
-        <div className="text-center mb-16">
-          <p className="text-xs font-medium tracking-widest uppercase mb-4" style={{ color: '#38bdf8' }}>Preguntas frecuentes</p>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: '400', color: '#e8f0fe', lineHeight: '1.1' }}>
-            Resolvemos tus dudas<br />
-            <span style={{ fontStyle: 'italic', color: '#6b80a3' }}>antes de que aparezcan.</span>
-          </h2>
-        </div>
-
-        <div className="space-y-2">
-          {faqs.map((faq, i) => (
-            <div
-              key={i}
-              className="rounded-2xl border overflow-hidden transition-colors duration-200"
-              style={{ borderColor: open === i ? '#243650' : '#1e2d42', background: open === i ? '#0c1120' : '#060912' }}
-            >
-              <button
-                onClick={() => setOpen(open === i ? null : i)}
-                className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left"
-              >
-                <span className="text-sm font-medium" style={{ color: '#e8f0fe' }}>{faq.q}</span>
-                <span className="shrink-0 h-7 w-7 rounded-lg flex items-center justify-center transition-colors duration-200" style={{ background: open === i ? 'rgba(56,189,248,0.12)' : '#1e2d42', color: open === i ? '#38bdf8' : '#6b80a3' }}>
-                  {open === i ? <Minus className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
-                </span>
-              </button>
-              {open === i && (
-                <div className="px-6 pb-6">
-                  <p className="text-sm leading-relaxed" style={{ color: '#6b80a3' }}>{faq.a}</p>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <p className="text-center mt-10 text-sm" style={{ color: '#3a4d6b' }}>
-          ¿Tienes otra pregunta?{' '}
-          <a href="#contacto" className="underline" style={{ color: '#6b80a3' }}>
-            Escríbenos directamente.
-          </a>
-        </p>
-      </div>
-    </section>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────
-   CONTACT / CTA
-───────────────────────────────────────────────────────────── */
-function Contact() {
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
-  const [form, setForm] = useState({ nombre: '', empresa: '', telefono: '', email: '', mensaje: '' });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('sending');
-    setTimeout(() => setStatus('sent'), 1800);
-  };
-
-  const inputStyle = {
-    background:  '#101828',
-    borderColor: '#243650',
-    color:       '#e8f0fe',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderRadius: '12px',
-    padding:     '12px 16px',
-    fontSize:    '0.875rem',
-    width:       '100%',
-    outline:     'none',
-    transition:  'border-color 0.2s',
-  };
-
-  return (
-    <section id="contacto" className="relative py-32 border-t overflow-hidden" style={{ borderColor: '#1e2d42' }}>
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute rounded-full" style={{ width: '800px', height: '800px', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', background: 'radial-gradient(circle, rgba(56,189,248,0.06) 0%, rgba(163,230,53,0.04) 40%, transparent 70%)', filter: 'blur(50px)' }} />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-7xl px-6">
-        <div className="grid lg:grid-cols-2 gap-20 items-start">
-
-          {/* Left — copy */}
-          <div>
-            <div className="mb-6 flex justify-start">
-              <NexusLogo size={56} />
-            </div>
-            <p className="text-xs font-medium tracking-widest uppercase mb-4" style={{ color: '#fb923c' }}>Conversemos</p>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 4vw, 4.5rem)', fontWeight: '400', color: '#e8f0fe', lineHeight: '1.1', marginBottom: '1.5rem' }}>
-              ¿Lista para ver Nexus<br />
-              <span style={{ fontStyle: 'italic' }} className="text-shimmer">en tu empresa?</span>
-            </h2>
-            <p className="text-lg leading-relaxed mb-12" style={{ color: '#6b80a3' }}>
-              Agendemos una demo de 30 minutos. Te mostramos la plataforma
-              funcionando con datos reales, respondemos tus preguntas y
-              evaluamos juntos si Nexus encaja con tu operación.
-            </p>
-
-            <div className="flex flex-col gap-5">
-              <div className="flex items-center gap-4">
-                <div className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(56,189,248,0.12)' }}>
-                  <Mail className="h-5 w-5" style={{ color: '#38bdf8' }} />
-                </div>
-                <div>
-                  <p className="text-xs mb-0.5" style={{ color: '#3a4d6b' }}>Correo</p>
-                  <a href="mailto:hola@wavenet.dev" className="text-sm font-medium nav-link">hola@wavenet.dev</a>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(163,230,53,0.12)' }}>
-                  <Phone className="h-5 w-5" style={{ color: '#a3e635' }} />
-                </div>
-                <div>
-                  <p className="text-xs mb-0.5" style={{ color: '#3a4d6b' }}>WhatsApp</p>
-                  <a href="https://wa.me/573001234567" className="text-sm font-medium nav-link">+57 300 123 4567</a>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(251,146,60,0.12)' }}>
-                  <MapPin className="h-5 w-5" style={{ color: '#fb923c' }} />
-                </div>
-                <div>
-                  <p className="text-xs mb-0.5" style={{ color: '#3a4d6b' }}>Ubicación</p>
-                  <p className="text-sm font-medium" style={{ color: '#6b80a3' }}>Colombia · Atención en todo el país</p>
-                </div>
-              </div>
-            </div>
+    <Section id="preguntas">
+      <div className="grid gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
+        <Reveal>
+          <div className="lg:sticky lg:top-28">
+            <Encabezado
+              eyebrow="Preguntas frecuentes"
+              titulo={<>Lo que preguntan antes de cotizar.</>}
+              bajada={
+                <>
+                  ¿Falta la suya? Escríbanos por WhatsApp al{' '}
+                  <a className="link-ul num" href={waLink('Hola, tengo una pregunta sobre Nexus ESP.')} target="_blank" rel="noopener">
+                    {WA_SHOW}
+                  </a>.
+                </>
+              }
+            />
           </div>
+        </Reveal>
 
-          {/* Right — form */}
-          <div className="rounded-3xl border p-8" style={{ borderColor: '#1e2d42', background: '#0c1120' }}>
-            {status === 'sent' ? (
-              <div className="flex flex-col items-center justify-center py-12 gap-5 text-center">
-                <div className="h-20 w-20 rounded-full flex items-center justify-center" style={{ background: 'rgba(163,230,53,0.15)' }}>
-                  <Check className="h-10 w-10" style={{ color: '#a3e635' }} />
-                </div>
-                <h3 className="text-xl font-semibold" style={{ color: '#e8f0fe' }}>¡Mensaje recibido!</h3>
-                <p className="text-sm leading-relaxed max-w-xs" style={{ color: '#6b80a3' }}>
-                  Nos pondremos en contacto contigo en las próximas horas para agendar tu demo personalizada.
-                </p>
-                <button onClick={() => { setStatus('idle'); setForm({ nombre: '', empresa: '', telefono: '', email: '', mensaje: '' }); }} className="mt-2 text-xs underline" style={{ color: '#3a4d6b' }}>
-                  Enviar otro mensaje
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <p className="text-base font-semibold mb-6" style={{ color: '#e8f0fe' }}>Solicitar demo gratuita</p>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs mb-1.5" style={{ color: '#3a4d6b' }}>Nombre *</label>
-                    <input
-                      required
-                      placeholder="Tu nombre"
-                      value={form.nombre}
-                      onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-                      style={inputStyle}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs mb-1.5" style={{ color: '#3a4d6b' }}>Empresa *</label>
-                    <input
-                      required
-                      placeholder="Nombre de tu ESP"
-                      value={form.empresa}
-                      onChange={(e) => setForm({ ...form, empresa: e.target.value })}
-                      style={inputStyle}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs mb-1.5" style={{ color: '#3a4d6b' }}>Correo electrónico *</label>
-                  <input
-                    required
-                    type="email"
-                    placeholder="tu@empresa.co"
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    style={inputStyle}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs mb-1.5" style={{ color: '#3a4d6b' }}>Teléfono / WhatsApp</label>
-                  <input
-                    placeholder="+57 300 000 0000"
-                    value={form.telefono}
-                    onChange={(e) => setForm({ ...form, telefono: e.target.value })}
-                    style={inputStyle}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs mb-1.5" style={{ color: '#3a4d6b' }}>¿Qué necesitas? (opcional)</label>
-                  <textarea
-                    rows={4}
-                    placeholder="Cuéntanos sobre tu empresa, cuántos clientes tienes, qué usas actualmente..."
-                    value={form.mensaje}
-                    onChange={(e) => setForm({ ...form, mensaje: e.target.value })}
-                    style={{ ...inputStyle, resize: 'none' }}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={status === 'sending'}
-                  className="btn-primary relative w-full inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-semibold mt-2 disabled:opacity-70"
+        <Reveal delay={80}>
+          <div className="card" style={{ padding: 'clamp(0.5rem, 1.5vw, 1rem)' }}>
+            {PREGUNTAS.map(([q, a], i) => {
+              const on = abierta === i;
+              return (
+                <div
+                  key={q}
+                  style={{ borderTop: i === 0 ? 'none' : '1px solid var(--color-line-2)' }}
                 >
-                  {status === 'sending' ? (
-                    <>
-                      <span className="h-4 w-4 rounded-full border-2 animate-spin relative z-10" style={{ borderColor: '#000', borderTopColor: 'transparent' }} />
-                      <span className="relative z-10">Enviando...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="relative z-10">Solicitar mi demo gratuita</span>
-                      <Send className="relative z-10 h-4 w-4" />
-                    </>
+                  <h3>
+                    <button
+                      onClick={() => setAbierta(on ? null : i)}
+                      aria-expanded={on}
+                      className="w-full flex items-start justify-between gap-5 text-left"
+                      style={{ padding: '1.25rem 1.25rem' }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-display)', fontStretch: '104%',
+                          fontWeight: 600, fontSize: 16.5,
+                          color: on ? 'var(--color-verde)' : 'var(--color-ink)',
+                          lineHeight: 1.4,
+                          transition: 'color .18s ease',
+                        }}
+                      >
+                        {q}
+                      </span>
+                      <span
+                        className="shrink-0 mt-0.5 flex items-center justify-center"
+                        style={{
+                          width: 26, height: 26, borderRadius: 8,
+                          background: on ? 'var(--color-verde)' : 'var(--color-paper)',
+                          transition: 'background .18s ease',
+                        }}
+                        aria-hidden
+                      >
+                        {on
+                          ? <Minus className="h-3.5 w-3.5" style={{ color: '#fff' }} />
+                          : <Plus  className="h-3.5 w-3.5" style={{ color: 'var(--color-ink-2)' }} />}
+                      </span>
+                    </button>
+                  </h3>
+                  {on && (
+                    <div className="a-ink" style={{ padding: '0 3.75rem 1.5rem 1.25rem' }}>
+                      <p style={{ fontSize: 15.5, color: 'var(--color-ink-2)', lineHeight: 1.72 }}>{a}</p>
+                    </div>
                   )}
-                </button>
-
-                <p className="text-xs text-center" style={{ color: '#3a4d6b' }}>
-                  Sin compromiso · Sin spam · Solo te contactamos para la demo
-                </p>
-              </form>
-            )}
+                </div>
+              );
+            })}
           </div>
-        </div>
+        </Reveal>
       </div>
-    </section>
+    </Section>
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
-   FOOTER
-───────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════
+   COTIZACIÓN
+   ═══════════════════════════════════════════════════════════════════ */
+
+const BANDAS = [
+  'Hasta 2.500 suscriptores', 'Entre 2.501 y 5.000', 'Entre 5.001 y 10.000',
+  'Entre 10.001 y 20.000', 'Más de 20.000', 'Todavía no lo tenemos definido',
+];
+const INTERES = [
+  'Nexus ESP', 'Aplicación de lectura para técnicos',
+  'Nexus + Aplicación de lectura', 'Aún no lo sé, quiero asesoría',
+];
+const MODULOS_INTERES = [
+  'Facturación', 'Recaudo', 'Cartera y financiación',
+  'PQR', 'Presupuesto (CDP y RP)', 'Reportes',
+];
+
+function Cotizacion() {
+  const [f, setF] = useState({
+    empresa: '', nombre: '', cargo: '', correo: '', telefono: '',
+    banda: BANDAS[0], interes: INTERES[0], servicio: '', mensaje: '',
+  });
+  const [mods, setMods] = useState<string[]>([]);
+  const [acepta, setAcepta] = useState(false);
+
+  const set = (k: keyof typeof f) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+      setF((s) => ({ ...s, [k]: e.target.value }));
+
+  const toggleMod = (m: string) =>
+    setMods((s) => (s.includes(m) ? s.filter((x) => x !== m) : [...s, m]));
+
+  const armarMensaje = () => [
+    'Solicitud de cotización — Nexus ESP', '',
+    `Empresa: ${f.empresa || '—'}`,
+    `Contacto: ${f.nombre || '—'}${f.cargo ? ` (${f.cargo})` : ''}`,
+    `Correo: ${f.correo || '—'}`,
+    `Teléfono: ${f.telefono || '—'}`,
+    `Servicio que presta: ${f.servicio || '—'}`,
+    `Suscriptores: ${f.banda}`,
+    `Solución de interés: ${f.interes}`,
+    `Módulos: ${mods.length ? mods.join(', ') : 'Por definir'}`,
+    f.mensaje ? `\nNota: ${f.mensaje}` : '',
+  ].filter(Boolean).join('\n');
+
+  const enviar = (e: React.FormEvent) => {
+    e.preventDefault();
+    window.open(waLink(armarMensaje()), '_blank', 'noopener');
+  };
+
+  const porCorreo = () => {
+    if (!acepta) return;
+    const asunto = encodeURIComponent(`Solicitud de cotización Nexus — ${f.empresa || 'nueva empresa'}`);
+    window.location.href = `mailto:${CORREO}?subject=${asunto}&body=${encodeURIComponent(armarMensaje())}`;
+  };
+
+  const canal = 'flex items-start gap-4 p-5 transition-colors';
+
+  return (
+    <Section id="cotizacion" band>
+      <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+        <div>
+          <Reveal>
+            <Encabezado
+              eyebrow="Hablemos"
+              titulo={<>Cuéntenos el tamaño de su operación y le armamos la propuesta.</>}
+              bajada="Diligencie el formulario y se abre WhatsApp con la solicitud ya redactada, o escríbanos directo por el canal que prefiera."
+            />
+          </Reveal>
+
+          <Reveal delay={80}>
+            <div className="card overflow-hidden" style={{ padding: 0 }}>
+              <a
+                href={waLink('Hola, quiero cotizar Nexus ESP para mi empresa de servicios públicos.')}
+                target="_blank" rel="noopener"
+                className={`${canal} hover:bg-[var(--color-paper)]`}
+              >
+                <span
+                  className="shrink-0 flex items-center justify-center"
+                  style={{ width: 40, height: 40, borderRadius: 12, background: 'var(--color-verde-tint)' }}
+                  aria-hidden
+                >
+                  <MessageCircle className="h-[19px] w-[19px]" style={{ color: 'var(--color-verde)' }} />
+                </span>
+                <span className="min-w-0">
+                  <span className="label block mb-1">WhatsApp · cotizaciones</span>
+                  <span className="num" style={{ fontSize: 17.5, fontWeight: 600, color: 'var(--color-ink)' }}>
+                    {WA_SHOW}
+                  </span>
+                </span>
+                <ArrowUpRight className="h-4 w-4 ml-auto shrink-0 mt-1" style={{ color: 'var(--color-ink-3)' }} aria-hidden />
+              </a>
+
+              <a
+                href={`mailto:${CORREO}?subject=${encodeURIComponent('Solicitud de cotización Nexus ESP')}`}
+                className={`${canal} hover:bg-[var(--color-paper)]`}
+                style={{ borderTop: '1px solid var(--color-line-2)' }}
+              >
+                <span
+                  className="shrink-0 flex items-center justify-center"
+                  style={{ width: 40, height: 40, borderRadius: 12, background: 'var(--color-verde-tint)' }}
+                  aria-hidden
+                >
+                  <Mail className="h-[19px] w-[19px]" style={{ color: 'var(--color-verde)' }} />
+                </span>
+                <span className="min-w-0">
+                  <span className="label block mb-1">Correo</span>
+                  <span className="num break-all" style={{ fontSize: 15, fontWeight: 500, color: 'var(--color-ink)' }}>
+                    {CORREO}
+                  </span>
+                </span>
+                <ArrowUpRight className="h-4 w-4 ml-auto shrink-0 mt-1" style={{ color: 'var(--color-ink-3)' }} aria-hidden />
+              </a>
+
+              <div className={canal} style={{ borderTop: '1px solid var(--color-line-2)' }}>
+                <span
+                  className="shrink-0 flex items-center justify-center"
+                  style={{ width: 40, height: 40, borderRadius: 12, background: 'var(--color-paper)' }}
+                  aria-hidden
+                >
+                  <Clock className="h-[19px] w-[19px]" style={{ color: 'var(--color-ink-3)' }} />
+                </span>
+                <span>
+                  <span className="label block mb-1">Horario · GMT−5</span>
+                  <span className="num" style={{ fontSize: 14, color: 'var(--color-ink)', lineHeight: 1.55 }}>
+                    Lun a vie · 8:00 a.m. – 6:00 p.m.<br />
+                    Sábados · 8:00 a.m. – 12:00 m.
+                  </span>
+                </span>
+              </div>
+
+              <div className={canal} style={{ borderTop: '1px solid var(--color-line-2)' }}>
+                <span
+                  className="shrink-0 flex items-center justify-center"
+                  style={{ width: 40, height: 40, borderRadius: 12, background: 'var(--color-paper)' }}
+                  aria-hidden
+                >
+                  <MapPin className="h-[19px] w-[19px]" style={{ color: 'var(--color-ink-3)' }} />
+                </span>
+                <span>
+                  <span className="label block mb-1">Wavenet</span>
+                  <span style={{ fontSize: 14.5, color: 'var(--color-ink)' }}>{CIUDAD}</span>
+                </span>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+
+        <Reveal delay={120}>
+          <form onSubmit={enviar} className="card" style={{ padding: 'clamp(1.75rem, 3.5vw, 2.5rem)' }}>
+            <div className="label mb-6">Solicitud de cotización</div>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <label className="sm:col-span-2">
+                <span className="label block mb-2">Empresa prestadora *</span>
+                <input required className="field" value={f.empresa} onChange={set('empresa')}
+                       placeholder="Nombre de la empresa" autoComplete="organization" />
+              </label>
+
+              <label>
+                <span className="label block mb-2">Nombre y apellido *</span>
+                <input required className="field" value={f.nombre} onChange={set('nombre')}
+                       placeholder="Quién nos escribe" autoComplete="name" />
+              </label>
+
+              <label>
+                <span className="label block mb-2">Cargo</span>
+                <input className="field" value={f.cargo} onChange={set('cargo')}
+                       placeholder="Gerente, director comercial…" autoComplete="organization-title" />
+              </label>
+
+              <label>
+                <span className="label block mb-2">Correo *</span>
+                <input required type="email" className="field" value={f.correo} onChange={set('correo')}
+                       placeholder="nombre@empresa.com" autoComplete="email" />
+              </label>
+
+              <label>
+                <span className="label block mb-2">Teléfono *</span>
+                <input required type="tel" className="field" value={f.telefono} onChange={set('telefono')}
+                       placeholder="300 000 0000" autoComplete="tel" />
+              </label>
+
+              <label>
+                <span className="label block mb-2">Servicio que presta</span>
+                <input className="field" value={f.servicio} onChange={set('servicio')}
+                       placeholder="Energía, acueducto, aseo…" />
+              </label>
+
+              <label>
+                <span className="label block mb-2">Cantidad de suscriptores *</span>
+                <select className="field" value={f.banda} onChange={set('banda')}>
+                  {BANDAS.map((b) => <option key={b}>{b}</option>)}
+                </select>
+              </label>
+
+              <label className="sm:col-span-2">
+                <span className="label block mb-2">Solución de interés</span>
+                <select className="field" value={f.interes} onChange={set('interes')}>
+                  {INTERES.map((i) => <option key={i}>{i}</option>)}
+                </select>
+              </label>
+
+              <fieldset className="sm:col-span-2">
+                <legend className="label mb-3">Módulos que le interesan</legend>
+                <div className="flex flex-wrap gap-2">
+                  {MODULOS_INTERES.map((m) => {
+                    const on = mods.includes(m);
+                    return (
+                      <button
+                        type="button" key={m} onClick={() => toggleMod(m)} aria-pressed={on}
+                        className="transition-all"
+                        style={{
+                          fontSize: 13.5, padding: '0.5rem 0.9375rem', borderRadius: 999,
+                          border: `1px solid ${on ? 'var(--color-verde)' : 'var(--color-line)'}`,
+                          background: on ? 'var(--color-verde-tint)' : 'var(--color-sheet)',
+                          color: on ? 'var(--color-verde-deep)' : 'var(--color-ink-2)',
+                          fontWeight: on ? 600 : 400,
+                        }}
+                      >
+                        {m}
+                      </button>
+                    );
+                  })}
+                </div>
+              </fieldset>
+
+              <label className="sm:col-span-2">
+                <span className="label block mb-2">Algo más que debamos saber</span>
+                <textarea className="field" value={f.mensaje} onChange={set('mensaje')}
+                          placeholder="Con qué facturan hoy, qué les urge resolver, para cuándo lo necesitan." />
+              </label>
+            </div>
+
+            <label
+              className="flex items-start gap-3 mt-7 cursor-pointer"
+              style={{ background: 'var(--color-paper)', borderRadius: 12, padding: '0.9375rem 1rem' }}
+            >
+              <input
+                type="checkbox"
+                required
+                checked={acepta}
+                onChange={(e) => setAcepta(e.target.checked)}
+                style={{ width: 17, height: 17, marginTop: 2, accentColor: 'var(--color-verde)', flexShrink: 0 }}
+              />
+              <span style={{ fontSize: 13.5, color: 'var(--color-ink-2)', lineHeight: 1.6 }}>
+                Autorizo a Wavenet a usar estos datos para responder mi solicitud de cotización,
+                según la{' '}
+                <Link href="/privacidad" className="link-ul">política de tratamiento de datos</Link>.
+              </span>
+            </label>
+
+            <div className="flex flex-col sm:flex-row gap-3 mt-5">
+              <button type="submit" className="btn btn-solid grow" disabled={!acepta}
+                      style={{ opacity: acepta ? 1 : 0.55, cursor: acepta ? 'pointer' : 'not-allowed' }}>
+                <MessageCircle className="h-4 w-4" aria-hidden /> Enviar por WhatsApp
+              </button>
+              <button type="button" onClick={porCorreo} className="btn btn-line" disabled={!acepta}
+                      style={{ opacity: acepta ? 1 : 0.55, cursor: acepta ? 'pointer' : 'not-allowed' }}>
+                <Mail className="h-4 w-4" aria-hidden /> Enviar por correo
+              </button>
+            </div>
+
+            <p className="mt-5" style={{ fontSize: 13, color: 'var(--color-ink-3)', lineHeight: 1.6 }}>
+              Esta página no guarda nada. Al enviar se abre WhatsApp con la solicitud ya
+              redactada y usted la revisa antes de mandarla.
+            </p>
+          </form>
+        </Reveal>
+      </div>
+    </Section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PIE
+   ═══════════════════════════════════════════════════════════════════ */
+
 function Footer() {
   return (
-    <footer className="border-t py-16" style={{ borderColor: '#1e2d42' }}>
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="flex flex-col md:flex-row items-start justify-between gap-12">
-          <div className="max-w-xs">
-            <div className="flex items-center gap-3 mb-4">
-              <NexusLogo size={36} />
-              <span className="font-semibold text-lg" style={{ color: '#e8f0fe' }}>Nexus</span>
-            </div>
-            <p className="text-sm leading-relaxed mb-6" style={{ color: '#3a4d6b' }}>
-              La plataforma de facturación y gestión para empresas de energía
-              eléctrica en Colombia. Moderna, automatizada y lista para crecer.
+    <footer style={{ background: 'var(--color-ink)' }}>
+      <div className="mx-auto w-full max-w-[1140px] px-5 sm:px-8" style={{ paddingTop: 64, paddingBottom: 44 }}>
+        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
+          <div>
+            <NexusLockup {...LOGO.pie} oscuro />
+            <p className="mt-5 max-w-[38ch]" style={{ fontSize: 14.5, color: '#a3b0a6', lineHeight: 1.7 }}>
+              Plataforma comercial y administrativa para empresas de servicios públicos
+              domiciliarias en Colombia.
             </p>
-            <div className="flex gap-3">
-              <a href="mailto:hola@wavenet.dev" className="h-9 w-9 rounded-xl border flex items-center justify-center transition-colors card-glow" style={{ borderColor: '#1e2d42', color: '#3a4d6b' }}>
-                <Mail className="h-4 w-4" />
-              </a>
-              <a href="https://wa.me/573001234567" className="h-9 w-9 rounded-xl border flex items-center justify-center transition-colors card-glow" style={{ borderColor: '#1e2d42', color: '#3a4d6b' }}>
-                <Phone className="h-4 w-4" />
-              </a>
-            </div>
+            <a
+              href={WAVENET} target="_blank" rel="noopener"
+              className="inline-flex items-center gap-2 mt-5"
+              style={{ fontSize: 14, color: 'var(--color-coral)', fontWeight: 600 }}
+            >
+              <WavenetMark {...LOGO.wavenet} />
+              Un producto de Wavenet
+              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
+            </a>
           </div>
 
-          <div className="flex gap-16 flex-wrap">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: '#3a4d6b' }}>Plataforma</p>
-              <div className="flex flex-col gap-3">
-                {[
-                  { label: 'La plataforma', href: '#plataforma'  },
-                  { label: 'Cómo funciona', href: '#como'        },
-                  { label: 'Facturación',   href: '#plataforma'  },
-                  { label: 'Cobros',        href: '#plataforma'  },
-                  { label: 'Reportes',      href: '#plataforma'  },
-                ].map((item) => (
-                  <a key={item.label} href={item.href} className="text-sm nav-link">{item.label}</a>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: '#3a4d6b' }}>Empresa</p>
-              <div className="flex flex-col gap-3">
-                {[
-                  { label: 'Nosotros',     href: '#nosotros' },
-                  { label: 'Precios',      href: '#precios'  },
-                  { label: 'Preguntas',    href: '#faq'      },
-                  { label: 'Contacto',     href: '#contacto' },
-                ].map((item) => (
-                  <a key={item.label} href={item.href} className="text-sm nav-link">{item.label}</a>
-                ))}
-              </div>
-            </div>
+          <nav aria-label="Pie, plataforma">
+            <div className="label mb-4" style={{ color: '#98a89d' }}>Plataforma</div>
+            <ul className="space-y-3">
+              {NAV.map((i) => (
+                <li key={i.t}><a href={i.h} style={{ fontSize: 14.5, color: '#c6d3c7' }}>{i.t}</a></li>
+              ))}
+              <li><a href="#cotizacion" style={{ fontSize: 14.5, color: '#c6d3c7' }}>Solicitar cotización</a></li>
+              <li><Link href="/privacidad" style={{ fontSize: 14.5, color: '#c6d3c7' }}>Tratamiento de datos</Link></li>
+            </ul>
+          </nav>
+
+          <div>
+            <div className="label mb-4" style={{ color: '#98a89d' }}>Contacto</div>
+            <ul className="space-y-3.5">
+              <li>
+                <a
+                  className="num" href={waLink('Hola, quiero cotizar Nexus ESP.')}
+                  target="_blank" rel="noopener"
+                  style={{ fontSize: 15, color: '#ffffff', fontWeight: 600 }}
+                >
+                  {WA_SHOW}
+                </a>
+                <span className="block label" style={{ color: '#98a89d', marginTop: 3 }}>WhatsApp</span>
+              </li>
+              <li>
+                <a className="num break-all" href={`mailto:${CORREO}`} style={{ fontSize: 13.5, color: '#c6d3c7' }}>
+                  {CORREO}
+                </a>
+              </li>
+              <li style={{ fontSize: 13.5, color: '#a3b0a6' }}>{CIUDAD}</li>
+              <li className="num" style={{ fontSize: 12.5, color: '#98a89d', lineHeight: 1.6 }}>
+                Lun–vie 8:00 a.m.–6:00 p.m.<br />Sáb 8:00 a.m.–12:00 m.
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-4" style={{ borderColor: '#1e2d42' }}>
-          <p className="text-xs" style={{ color: '#3a4d6b' }}>
-            © {new Date().getFullYear()} Wavenet Dev SAS · Todos los derechos reservados
-          </p>
-          <div className="flex items-center gap-4">
-            <a href="#inicio" className="text-xs nav-link">Privacidad</a>
-            <a href="#inicio" className="text-xs nav-link">Términos</a>
-            <p className="text-xs" style={{ color: '#3a4d6b' }}>Hecho en Colombia 🇨🇴</p>
-          </div>
+        <div
+          className="flex flex-wrap items-center justify-between gap-3 mt-12 pt-6"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.09)' }}
+        >
+          <span className="num" style={{ fontSize: 12.5, color: '#98a89d', lineHeight: 1.6 }}>
+            © {new Date().getFullYear()} Wavenet Dev S.A.S. · NIT 902.002.900-5
+          </span>
+          <span className="num" style={{ fontSize: 12.5, color: '#98a89d' }}>
+            Todos los planes se manejan bajo cotización
+          </span>
         </div>
       </div>
     </footer>
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
-   PAGE
-───────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════ */
+
 export default function LandingPage() {
   return (
     <>
       <Nav />
       <main>
         <Hero />
-        <Stats />
-        <WhatItDoes />
-        <Modules />
-        <HowItWorks />
-        <Trust />
-        <OnboardingDemo />
-        <Pricing />
-        <FAQ />
-        <Contact />
+        <Produccion />
+        <Contraste />
+        <Modulos />
+        <Campo />
+        <Presupuesto />
+        <Implementacion />
+        <Soluciones />
+        <Preguntas />
+        <Cotizacion />
       </main>
       <Footer />
     </>
